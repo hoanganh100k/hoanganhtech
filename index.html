@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hoang Anh Technology – Số hoá & Tự động hoá quy trình</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome (Awesome icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      --bg1:#0b1220; --bg2:#101a33; --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12); --text: rgba(255,255,255,.88);
+      --muted: rgba(255,255,255,.62); --accent1:#7c3aed; --accent2:#06b6d4;
+    }
+    body{
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,.25), transparent 60%),
+        radial-gradient(1000px 500px at 90% 20%, rgba(6,182,212,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      color: var(--text);
+    }
+    .grid-bg{
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(circle at 50% 0%, black 0%, transparent 65%);
+    }
+    .glass{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .soft{ box-shadow: 0 18px 70px rgba(0,0,0,.35); }
+    .chip{
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+    }
+    .link{
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(255,255,255,.35);
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .kpi{
+      background: linear-gradient(135deg, rgba(124,58,237,.20), rgba(6,182,212,.14));
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .badge-ok{
+      background: rgba(34,197,94,.14);
+      border: 1px solid rgba(34,197,94,.28);
+      color: rgba(187,247,208,.95);
+    }
+    .badge-warn{
+      background: rgba(245,158,11,.14);
+      border: 1px solid rgba(245,158,11,.28);
+      color: rgba(254,243,199,.95);
+    }
+    .badge-info{
+      background: rgba(59,130,246,.14);
+      border: 1px solid rgba(59,130,246,.28);
+      color: rgba(191,219,254,.95);
+    }
+
+    /* Stepper */
+    .step-line{ height: 2px; background: rgba(255,255,255,.16); }
+    .step-dot{
+      width: 12px; height: 12px; border-radius: 999px;
+      background: rgba(255,255,255,.25);
+      border: 1px solid rgba(255,255,255,.20);
+    }
+    .step-dot.active{
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      box-shadow: 0 0 0 6px rgba(124,58,237,.12);
+    }
+
+    /* Inputs */
+    input[type="range"]{ accent-color: #7c3aed; }
+    input[type="number"]{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 12px;
+      padding: 10px 12px;
+      width: 100%;
+      color: rgba(255,255,255,.88);
+      outline: none;
+    }
+    input[type="number"]:focus{
+      border-color: rgba(124,58,237,.55);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.12);
+    }
+
+    table th{ color: rgba(255,255,255,.75); font-weight: 600; }
+    table td{ color: rgba(255,255,255,.78); }
+    .fa-fw{ width: 1.25em; text-align:center; }
+  </style>
+</head>
+
+<body class="min-h-screen">
+  <div class="absolute inset-0 grid-bg pointer-events-none"></div>
+
+  <main class="relative mx-auto max-w-6xl px-4 py-10">
+    <!-- Header -->
+    <header class="glass soft rounded-2xl p-6 md:p-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-3">
+            <span class="inline-flex items-center justify-center h-10 w-10 rounded-xl kpi">
+              <i class="fa-solid fa-bolt fa-fw"></i>
+            </span>
+            Hoang Anh Technology – Số hoá & Tự động hoá quy trình
+          </h1>
+          <p class="mt-3 text-white/70">
+            Chúng tôi biến các việc lặp lại (duyệt chi, mua hàng, đối soát, kho, CRM…) thành quy trình số có
+            <b>tự động nhắc việc</b>, <b>tự động tổng hợp</b> và <b>báo cáo theo thời gian thực</b>.
+          </p>
+
+          <div class="mt-4 flex flex-wrap gap-2 text-sm">
+            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-building fa-fw"></i> B2B</span>
+            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-people-group fa-fw"></i> SME 20–300</span>
+            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-diagram-project fa-fw"></i> Workflow</span>
+            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-plug fa-fw"></i> Tích hợp</span>
+            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-chart-line fa-fw"></i> Dashboard</span>
+            <span class="chip rounded-full px-3 py-1 mono"><i class="fa-solid fa-stopwatch fa-fw"></i> “2 tuần có kết quả”</span>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5 w-full md:w-[380px]">
+          <p class="text-sm text-white/70 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved fa-fw"></i><b>Cam kết thuyết phục (dễ hiểu):</b>
+          </p>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-check fa-fw text-emerald-300"></i><span>Giảm <b>30–70%</b> thời gian xử lý một quy trình mục tiêu</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check fa-fw text-emerald-300"></i><span>Biết <b>kẹt ở đâu</b>, ai đang giữ việc, vì sao chậm</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check fa-fw text-emerald-300"></i><span>Báo cáo “thật” theo ngày/tuần thay vì chờ tổng hợp Excel</span></li>
+          </ul>
+          <p class="mt-3 text-xs text-white/60">
+            <i class="fa-solid fa-circle-info fa-fw"></i>
+            Kết quả phụ thuộc dữ liệu đầu vào và mức độ phối hợp của các bộ phận.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Nav -->
+    <nav class="mt-6 glass soft rounded-2xl p-4">
+      <div class="flex flex-wrap gap-3 text-sm text-white/80">
+        <a class="link" href="#product"><i class="fa-solid fa-box-open fa-fw"></i> Sản phẩm/Dịch vụ</a>
+        <a class="link" href="#factory"><i class="fa-solid fa-industry fa-fw"></i> Quy trình “sản xuất” cho khách</a>
+        <a class="link" href="#revenue"><i class="fa-solid fa-coins fa-fw"></i> Doanh thu & Thu nhập</a>
+        <a class="link" href="#ops"><i class="fa-solid fa-gears fa-fw"></i> Operations</a>
+        <a class="link" href="#risk"><i class="fa-solid fa-lock fa-fw"></i> Rủi ro & Bảo mật</a>
+      </div>
+    </nav>
+
+    <!-- PRODUCT -->
+    <section id="product" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+            <i class="fa-solid fa-box-open fa-fw"></i> Sản phẩm/Dịch vụ
+          </h2>
+          <p class="mt-2 text-white/70">
+            Bán theo <b>gói + kết quả</b>, không bán “làm theo yêu cầu vô hạn”.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-wand-magic-sparkles fa-fw"></i> Quick-win trong 14 ngày</span>
+          <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-list-check fa-fw"></i> Template theo ngành</span>
+          <span class="badge-warn rounded-full px-3 py-1"><i class="fa-solid fa-sitemap fa-fw"></i> Scope rõ + nghiệm thu theo mốc</span>
+        </div>
+      </div>
+
+      <div class="mt-6 grid md:grid-cols-3 gap-4">
+        <div class="glass rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-rocket fa-fw"></i> Gói 1: Starter</h3>
+            <span class="chip rounded-full px-3 py-1 text-xs">2–3 tuần</span>
+          </div>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> 3–5 quy trình</li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Form chuẩn + phân quyền</li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> 1 dashboard cơ bản</li>
+          </ul>
+          <p class="mt-3 text-sm text-white/70"><b>Giá tham khảo:</b> 30–80 triệu</p>
+          <p class="mt-1 text-xs text-white/60">Dành cho DN muốn thấy hiệu quả nhanh để quyết định mở rộng.</p>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-gears fa-fw"></i> Gói 2: Standard</h3>
+            <span class="chip rounded-full px-3 py-1 text-xs">4–8 tuần</span>
+          </div>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> 10–20 quy trình</li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Tích hợp (kế toán/CRM/kho)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> KPI + báo cáo theo ngày/tuần</li>
+          </ul>
+          <p class="mt-3 text-sm text-white/70"><b>Giá tham khảo:</b> 80–200+ triệu</p>
+          <p class="mt-1 text-xs text-white/60">Gói “xương sống” tạo hiệu quả vận hành rõ nhất.</p>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-handshake fa-fw"></i> Gói 3: Retainer</h3>
+            <span class="chip rounded-full px-3 py-1 text-xs">Theo tháng</span>
+          </div>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Hỗ trợ + sửa/tối ưu</li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Thêm workflow theo nhu cầu</li>
+            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Monthly review KPI</li>
+          </ul>
+          <p class="mt-3 text-sm text-white/70"><b>Giá tham khảo:</b> 5–30 triệu/tháng</p>
+          <p class="mt-1 text-xs text-white/60">Giữ hệ thống “sống”, tránh mua xong để đó.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 glass rounded-2xl p-5">
+        <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-crosshairs fa-fw"></i> Khác gì đối thủ (nói kiểu người ngoài ngành)</h3>
+        <div class="mt-3 grid md:grid-cols-3 gap-4 text-sm text-white/75">
+          <div class="chip rounded-2xl p-4">
+            <p class="font-semibold"><i class="fa-solid fa-stopwatch fa-fw"></i> Thấy kết quả nhanh</p>
+            <p class="mt-1">2 tuần đầu phải có 1–2 quy trình chạy thật để tạo niềm tin.</p>
+          </div>
+          <div class="chip rounded-2xl p-4">
+            <p class="font-semibold"><i class="fa-solid fa-copy fa-fw"></i> Có “mẫu” sẵn theo ngành</p>
+            <p class="mt-1">Không làm lại từ đầu mỗi lần → nhanh hơn, ít lỗi hơn.</p>
+          </div>
+          <div class="chip rounded-2xl p-4">
+            <p class="font-semibold"><i class="fa-solid fa-plug-circle-check fa-fw"></i> Kết nối cái khách đang dùng</p>
+            <p class="mt-1">Không ép thay toàn bộ hệ thống → giảm rủi ro và chi phí.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FACTORY: PROCESS -->
+    <section id="factory" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
+      <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+        <i class="fa-solid fa-industry fa-fw"></i> Quy trình “sản xuất/triển khai sản phẩm” cho khách hàng (thuyết phục & rõ ràng)
+      </h2>
+      <p class="mt-2 text-white/70">
+        Đây là cách làm để khách tin: <b>không mơ hồ</b>, có <b>đầu ra (deliverables)</b>, có <b>tiêu chí nghiệm thu</b>, có <b>kế hoạch dự phòng</b>.
+      </p>
+
+      <!-- Stepper -->
+      <div class="mt-6">
+        <div class="grid grid-cols-6 items-center gap-3">
+          <div class="flex flex-col items-center gap-2">
+            <div class="step-dot active"></div>
+            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-magnifying-glass fa-fw"></i> 1. Khảo sát</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="step-dot active"></div>
+            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-pen-ruler fa-fw"></i> 2. Thiết kế</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="step-dot active"></div>
+            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-screwdriver-wrench fa-fw"></i> 3. Xây dựng</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="step-dot active"></div>
+            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-vial-circle-check fa-fw"></i> 4. Kiểm thử</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="step-dot active"></div>
+            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-rocket fa-fw"></i> 5. Go-live</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="step-dot active"></div>
+            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-chart-line fa-fw"></i> 6. Tối ưu</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed steps -->
+      <div class="mt-6 grid lg:grid-cols-2 gap-4">
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-magnifying-glass fa-fw"></i> 1) Khảo sát & Chốt “bài toán đinh” (1–3 ngày)</h3>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-file-lines fa-fw"></i> Thu thập hiện trạng: đang làm bằng Excel/Zalo/email gì?</li>
+            <li class="flex gap-2"><i class="fa-solid fa-triangle-exclamation fa-fw"></i> Tìm điểm nghẽn: chậm duyệt, thiếu chứng từ, sai số, thất thoát…</li>
+            <li class="flex gap-2"><i class="fa-solid fa-bullseye fa-fw"></i> Chọn 1–2 quy trình “đinh” để làm quick-win trong 2 tuần</li>
+          </ul>
+          <div class="mt-4 text-xs text-white/70">
+            <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-box-archive fa-fw"></i> Deliverables:</span>
+            <span class="ml-2">Bản vẽ quy trình (As-is), danh sách vấn đề, KPI mục tiêu</span>
+          </div>
+          <div class="mt-2 text-xs text-white/70">
+            <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-stamp fa-fw"></i> Nghiệm thu:</span>
+            <span class="ml-2">Khách xác nhận đúng quy trình & KPI đo được</span>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-pen-ruler fa-fw"></i> 2) Thiết kế giải pháp (To-be) & Scope (2–4 ngày)</h3>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-sitemap fa-fw"></i> Thiết kế luồng duyệt: ai duyệt, hạn mức, thời gian nhắc việc</li>
+            <li class="flex gap-2"><i class="fa-solid fa-user-shield fa-fw"></i> Phân quyền dữ liệu: ai xem/ai sửa/ai xuất báo cáo</li>
+            <li class="flex gap-2"><i class="fa-solid fa-plug fa-fw"></i> Chốt tích hợp: lấy dữ liệu từ đâu, đẩy sang đâu (kế toán/CRM/kho)</li>
+          </ul>
+          <div class="mt-4 text-xs text-white/70">
+            <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-box-archive fa-fw"></i> Deliverables:</span>
+            <span class="ml-2">Tài liệu To-be + danh sách form + checklist dữ liệu</span>
+          </div>
+          <div class="mt-2 text-xs text-white/70">
+            <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-stamp fa-fw"></i> Nghiệm thu:</span>
+            <span class="ml-2">Ký scope + timeline + milestone thanh toán</span>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-screwdriver-wrench fa-fw"></i> 3) Xây dựng theo Sprint (1–2 tuần/sprint)</h3>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-square-check fa-fw"></i> Mỗi sprint ra “tính năng chạy được” (không nói suông)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-bell fa-fw"></i> Tự động nhắc việc/nhắc duyệt, hạn chế “đợi nhau”</li>
+            <li class="flex gap-2"><i class="fa-solid fa-database fa-fw"></i> Chuẩn hóa dữ liệu đầu vào để giảm sai</li>
+          </ul>
+          <div class="mt-4 text-xs text-white/70">
+            <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-box-archive fa-fw"></i> Deliverables:</span>
+            <span class="ml-2">Workflow + form + phân quyền + bản demo</span>
+          </div>
+          <div class="mt-2 text-xs text-white/70">
+            <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-stamp fa-fw"></i> Nghiệm thu:</span>
+            <span class="ml-2">Demo theo kịch bản thật của khách</span>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-vial-circle-check fa-fw"></i> 4) Kiểm thử/UAT & Go-live an toàn (3–7 ngày)</h3>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-flask fa-fw"></i> Test bằng dữ liệu mẫu → rồi test bằng dữ liệu thật (có kiểm soát)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-rotate-left fa-fw"></i> Có kế hoạch rollback (quay về cách cũ tạm thời nếu lỗi)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-graduation-cap fa-fw"></i> Đào tạo: 60–90 phút + video + SOP (để không “mua xong bỏ”)</li>
+          </ul>
+          <div class="mt-4 text-xs text-white/70">
+            <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-box-archive fa-fw"></i> Deliverables:</span>
+            <span class="ml-2">Biên bản test, checklist go-live, SOP + video</span>
+          </div>
+          <div class="mt-2 text-xs text-white/70">
+            <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-stamp fa-fw"></i> Nghiệm thu:</span>
+            <span class="ml-2">Chạy thật 1–2 tuần ổn định + KPI bắt đầu đo được</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 glass rounded-2xl p-5">
+        <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-crown fa-fw"></i> “Điểm ăn tiền” để khách tin và chịu chi</h3>
+        <div class="mt-3 grid md:grid-cols-3 gap-4 text-sm text-white/75">
+          <div class="chip rounded-2xl p-4">
+            <p class="font-semibold"><i class="fa-solid fa-money-bill-trend-up fa-fw"></i> ROI nói bằng con số</p>
+            <p class="mt-1">Ví dụ: giảm 300 giờ/tháng → quy ra chi phí nhân sự + giảm sai sót.</p>
+          </div>
+          <div class="chip rounded-2xl p-4">
+            <p class="font-semibold"><i class="fa-solid fa-tower-broadcast fa-fw"></i> Minh bạch tiến độ</p>
+            <p class="mt-1">Mỗi sprint đều demo, khách thấy rõ đang làm tới đâu.</p>
+          </div>
+          <div class="chip rounded-2xl p-4">
+            <p class="font-semibold"><i class="fa-solid fa-lock fa-fw"></i> Bảo mật & phân quyền</p>
+            <p class="mt-1">Ai được xem gì, log truy cập, NDA trước khi nhận dữ liệu.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVENUE -->
+    <section id="revenue" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+            <i class="fa-solid fa-coins fa-fw"></i> Doanh thu & Thu nhập (mô phỏng)
+          </h2>
+          <p class="mt-2 text-white/70">
+            Bạn kéo các thông số bên dưới để thấy <b>doanh thu</b>, <b>lợi nhuận gộp</b>, <b>lợi nhuận trước thuế</b> thay đổi.
+          </p>
+        </div>
+        <div class="text-xs text-white/60 flex items-center gap-2">
+          <i class="fa-solid fa-circle-info fa-fw"></i>
+          Con số là mô phỏng để lập kế hoạch, thực tế phụ thuộc công nợ & tốc độ triển khai.
+        </div>
+      </div>
+
+      <!-- Inputs -->
+      <div class="mt-6 grid lg:grid-cols-3 gap-4">
+        <div class="glass rounded-2xl p-5">
+          <p class="text-sm font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-briefcase fa-fw"></i> Dự án / tháng
+          </p>
+          <div class="mt-3">
+            <input id="projectsPerMonth" type="range" min="0" max="6" step="1" value="2" class="w-full">
+            <div class="mt-2 flex items-center justify-between text-xs text-white/65">
+              <span>0</span><span class="mono">Hiện tại: <b id="ppmLabel">2</b></span><span>6</span>
+            </div>
+          </div>
+
+          <p class="mt-5 text-sm font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-tag fa-fw"></i> Giá TB / dự án (triệu VNĐ)
+          </p>
+          <div class="mt-3">
+            <input id="avgProjectPrice" type="number" value="120" min="10" step="5">
+            <p class="mt-2 text-xs text-white/60"><i class="fa-solid fa-lightbulb fa-fw"></i> Gợi ý: 80–200 (tuỳ scope)</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <p class="text-sm font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-percent fa-fw"></i> Biên lợi nhuận gộp (%)
+          </p>
+          <div class="mt-3">
+            <input id="grossMargin" type="range" min="35" max="85" step="1" value="60" class="w-full">
+            <div class="mt-2 flex items-center justify-between text-xs text-white/65">
+              <span>35%</span><span class="mono">Hiện tại: <b id="gmLabel">60</b>%</span><span>85%</span>
+            </div>
+          </div>
+
+          <p class="mt-5 text-sm font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-handshake fa-fw"></i> Retainer / khách / tháng (triệu)
+          </p>
+          <div class="mt-3">
+            <input id="retainerPrice" type="number" value="10" min="1" step="1">
+            <p class="mt-2 text-xs text-white/60"><i class="fa-solid fa-lightbulb fa-fw"></i> Gợi ý: 5–30</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <p class="text-sm font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-users fa-fw"></i> Số khách Retainer tích luỹ
+          </p>
+          <div class="mt-3">
+            <input id="retainerClients" type="range" min="0" max="30" step="1" value="8" class="w-full">
+            <div class="mt-2 flex items-center justify-between text-xs text-white/65">
+              <span>0</span><span class="mono">Hiện tại: <b id="rcLabel">8</b></span><span>30</span>
+            </div>
+          </div>
+
+          <p class="mt-5 text-sm font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-receipt fa-fw"></i> Chi phí cố định / tháng (triệu)
+          </p>
+          <div class="mt-3">
+            <input id="fixedCost" type="number" value="120" min="10" step="5">
+            <p class="mt-2 text-xs text-white/60"><i class="fa-solid fa-lightbulb fa-fw"></i> Gồm lương + công cụ + marketing</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="mt-6 grid md:grid-cols-4 gap-4">
+        <div class="kpi rounded-2xl p-5 soft">
+          <p class="text-xs text-white/70"><i class="fa-solid fa-sack-dollar fa-fw"></i> Doanh thu/tháng</p>
+          <p class="mt-2 text-2xl font-bold mono" id="kpiRevenue">0</p>
+          <p class="mt-1 text-xs text-white/60">triệu VNĐ</p>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <p class="text-xs text-white/70"><i class="fa-solid fa-chart-pie fa-fw"></i> Lãi gộp/tháng</p>
+          <p class="mt-2 text-2xl font-bold mono" id="kpiGrossProfit">0</p>
+          <p class="mt-1 text-xs text-white/60">triệu VNĐ</p>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <p class="text-xs text-white/70"><i class="fa-solid fa-money-bill-transfer fa-fw"></i> Lãi trước thuế</p>
+          <p class="mt-2 text-2xl font-bold mono" id="kpiPreTax">0</p>
+          <p class="mt-1 text-xs text-white/60">triệu VNĐ</p>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <p class="text-xs text-white/70"><i class="fa-solid fa-scale-balanced fa-fw"></i> Điểm hoà vốn</p>
+          <p class="mt-2 text-2xl font-bold mono" id="kpiBreakeven">0</p>
+          <p class="mt-1 text-xs text-white/60">triệu doanh thu/tháng</p>
+        </div>
+      </div>
+
+      <!-- Chart + Table -->
+      <div class="mt-6 grid lg:grid-cols-5 gap-4">
+        <div class="glass rounded-2xl p-5 lg:col-span-3">
+          <div class="flex items-center justify-between">
+            <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-chart-line fa-fw"></i> Dòng tiền mô phỏng 12 tháng</p>
+            <span class="chip rounded-full px-3 py-1 text-xs"><i class="fa-solid fa-wand-magic-sparkles fa-fw"></i> tự cập nhật</span>
+          </div>
+          <div class="mt-4">
+            <canvas id="cashChart" height="120"></canvas>
+          </div>
+          <p class="mt-3 text-xs text-white/60">
+            <i class="fa-solid fa-circle-info fa-fw"></i>
+            Mô hình đơn giản: doanh thu dự án + retainer, lãi gộp theo %, trừ chi phí cố định.
+          </p>
+        </div>
+
+        <div class="glass rounded-2xl p-5 lg:col-span-2">
+          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-table fa-fw"></i> Tóm tắt 1 tháng</p>
+          <div class="mt-3 overflow-auto">
+            <table class="w-full text-sm">
+              <tbody>
+                <tr>
+                  <td class="py-2 text-white/70"><i class="fa-solid fa-briefcase fa-fw"></i> Doanh thu dự án</td>
+                  <td class="py-2 text-right mono" id="tProjectRevenue">0</td>
+                </tr>
+                <tr>
+                  <td class="py-2 text-white/70"><i class="fa-solid fa-handshake fa-fw"></i> Doanh thu retainer</td>
+                  <td class="py-2 text-right mono" id="tRetainerRevenue">0</td>
+                </tr>
+                <tr>
+                  <td class="py-2 text-white/70"><i class="fa-solid fa-sack-dollar fa-fw"></i> Tổng doanh thu</td>
+                  <td class="py-2 text-right mono" id="tTotalRevenue">0</td>
+                </tr>
+                <tr>
+                  <td class="py-2 text-white/70"><i class="fa-solid fa-chart-pie fa-fw"></i> Lãi gộp</td>
+                  <td class="py-2 text-right mono" id="tGrossProfit">0</td>
+                </tr>
+                <tr>
+                  <td class="py-2 text-white/70"><i class="fa-solid fa-receipt fa-fw"></i> Chi phí cố định</td>
+                  <td class="py-2 text-right mono" id="tFixedCost">0</td>
+                </tr>
+                <tr>
+                  <td class="py-2 text-white/70"><i class="fa-solid fa-money-bill-transfer fa-fw"></i> Lãi trước thuế</td>
+                  <td class="py-2 text-right mono" id="tPreTax">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-4 chip rounded-2xl p-4 text-sm text-white/75">
+            <p class="font-semibold"><i class="fa-solid fa-key fa-fw"></i> Gợi ý “thu nhập chủ” (thực dụng)</p>
+            <p class="mt-1">
+              Khi lãi trước thuế ổn định dương, trích <b>lương CEO</b> + <b>thưởng theo KPI</b>.
+              Trước đó ưu tiên <b>dòng tiền</b> để không bị gãy.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OPS -->
+    <section id="ops" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
+      <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+        <i class="fa-solid fa-gears fa-fw"></i> Operations (vận hành) – Từ nhận khách đến thu tiền
+      </h2>
+
+      <div class="mt-6 grid lg:grid-cols-3 gap-4">
+        <div class="glass rounded-2xl p-5">
+          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-inbox fa-fw"></i> Nhận khách</p>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-filter fa-fw"></i> Sàng lọc: quy mô, pain, ngân sách</li>
+            <li class="flex gap-2"><i class="fa-solid fa-calendar-check fa-fw"></i> Đặt lịch audit 60–90 phút</li>
+            <li class="flex gap-2"><i class="fa-solid fa-file-signature fa-fw"></i> NDA trước khi nhận dữ liệu thật</li>
+          </ul>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-truck-fast fa-fw"></i> Triển khai</p>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-flag-checkered fa-fw"></i> Sprint 1 tuần: demo liên tục</li>
+            <li class="flex gap-2"><i class="fa-solid fa-clipboard-check fa-fw"></i> UAT + checklist go-live</li>
+            <li class="flex gap-2"><i class="fa-solid fa-graduation-cap fa-fw"></i> Training + SOP + video hướng dẫn</li>
+          </ul>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-cash-register fa-fw"></i> Thu tiền & CSKH</p>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-layer-group fa-fw"></i> Thu theo mốc: 40–40–20 (hoặc 50–30–20)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-headset fa-fw"></i> Ticket hỗ trợ + SLA</li>
+            <li class="flex gap-2"><i class="fa-solid fa-chart-simple fa-fw"></i> Monthly review KPI → upsell retainer</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-6 glass rounded-2xl p-5">
+        <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-toolbox fa-fw"></i> Công cụ quản lý (gọn mà hiệu quả)</p>
+        <div class="mt-3 grid md:grid-cols-4 gap-3 text-sm text-white/75">
+          <div class="chip rounded-2xl p-4"><i class="fa-solid fa-list-check fa-fw"></i> Project: ClickUp/Trello</div>
+          <div class="chip rounded-2xl p-4"><i class="fa-solid fa-folder-open fa-fw"></i> Tài liệu: Google/M365</div>
+          <div class="chip rounded-2xl p-4"><i class="fa-solid fa-ticket fa-fw"></i> Support: Freshdesk/Form</div>
+          <div class="chip rounded-2xl p-4"><i class="fa-solid fa-address-card fa-fw"></i> CRM: HubSpot</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISK -->
+    <section id="risk" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
+      <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+        <i class="fa-solid fa-lock fa-fw"></i> Rủi ro & Bảo mật (nói rõ để khách yên tâm)
+      </h2>
+
+      <div class="mt-6 grid lg:grid-cols-2 gap-4">
+        <div class="glass rounded-2xl p-5">
+          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-shield-halved fa-fw"></i> Bảo mật dữ liệu khách hàng</p>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-user-lock fa-fw"></i> Nguyên tắc “đúng người đúng quyền” (least privilege)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-key fa-fw"></i> Bật 2FA + không dùng chung tài khoản</li>
+            <li class="flex gap-2"><i class="fa-solid fa-clock-rotate-left fa-fw"></i> Backup định kỳ + kiểm tra khả năng khôi phục</li>
+            <li class="flex gap-2"><i class="fa-solid fa-clipboard-list fa-fw"></i> Log truy cập: ai làm gì, lúc nào</li>
+          </ul>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation fa-fw"></i> Phương án dự phòng (khi có sự cố)</p>
+          <ul class="mt-3 space-y-2 text-sm text-white/75">
+            <li class="flex gap-2"><i class="fa-solid fa-rotate-left fa-fw"></i> Rollback plan khi go-live lỗi (quay về quy trình cũ tạm thời)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-bug-slash fa-fw"></i> Quy trình xử lý bug theo mức độ ưu tiên (P1/P2/P3)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-file-signature fa-fw"></i> Hợp đồng scope rõ + nghiệm thu theo mốc (tránh “làm vô hạn”)</li>
+            <li class="flex gap-2"><i class="fa-solid fa-handshake-angle fa-fw"></i> Retainer giúp hệ thống được chăm sóc liên tục</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-6 chip rounded-2xl p-5 text-sm text-white/75">
+        <p class="font-semibold"><i class="fa-solid fa-comment-dots fa-fw"></i> Câu nói chốt niềm tin (đúng kiểu doanh nhân)</p>
+        <p class="mt-2">
+          “Chúng tôi không bán phần mềm rồi biến mất. Chúng tôi bán <b>kết quả vận hành</b>:
+          quy trình chạy thật, đo KPI thật, và có người chịu trách nhiệm đến khi ổn định.”
+        </p>
+      </div>
+    </section>
+
+    <footer class="mt-8 text-center text-xs text-white/55">
+      <p><i class="fa-solid fa-circle-info fa-fw"></i> Tài liệu mẫu để pitch, bạn có thể thay ngành ưu tiên, gói giá và KPI theo tình hình.</p>
+    </footer>
+  </main>
+
+  <script>
+    // ---------- Helpers ----------
+    const fmt = (n) => {
+      const x = Math.round(n);
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
+    // ---------- Elements ----------
+    const el = {
+      ppm: document.getElementById("projectsPerMonth"),
+      ppmLabel: document.getElementById("ppmLabel"),
+      price: document.getElementById("avgProjectPrice"),
+      gm: document.getElementById("grossMargin"),
+      gmLabel: document.getElementById("gmLabel"),
+      retPrice: document.getElementById("retainerPrice"),
+      retClients: document.getElementById("retainerClients"),
+      rcLabel: document.getElementById("rcLabel"),
+      fixed: document.getElementById("fixedCost"),
+
+      kpiRevenue: document.getElementById("kpiRevenue"),
+      kpiGross: document.getElementById("kpiGrossProfit"),
+      kpiPreTax: document.getElementById("kpiPreTax"),
+      kpiBreakeven: document.getElementById("kpiBreakeven"),
+
+      tProject: document.getElementById("tProjectRevenue"),
+      tRet: document.getElementById("tRetainerRevenue"),
+      tTotal: document.getElementById("tTotalRevenue"),
+      tGross: document.getElementById("tGrossProfit"),
+      tFixed: document.getElementById("tFixedCost"),
+      tPreTax: document.getElementById("tPreTax"),
+    };
+
+    // ---------- Chart ----------
+    const ctx = document.getElementById("cashChart").getContext("2d");
+
+    const labels = Array.from({length: 12}, (_, i) => `T${i+1}`);
+    const chartData = {
+      labels,
+      datasets: [
+        { label: "Doanh thu (triệu)", data: Array(12).fill(0) },
+        { label: "Lãi trước thuế (triệu)", data: Array(12).fill(0) },
+      ]
+    };
+
+    const cashChart = new Chart(ctx, {
+      type: "line",
+      data: chartData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: "rgba(255,255,255,.75)" } },
+          tooltip: {
+            callbacks: {
+              label: (c) => `${c.dataset.label}: ${fmt(c.parsed.y)}`
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: "rgba(255,255,255,.65)" }, grid: { color: "rgba(255,255,255,.08)" } },
+          y: { ticks: { color: "rgba(255,255,255,.65)" }, grid: { color: "rgba(255,255,255,.08)" } }
+        }
+      }
+    });
+
+    // ---------- Model ----------
+    function recalc() {
+      const projectsPerMonth = Number(el.ppm.value);
+      const avgProjectPrice = Number(el.price.value); // triệu
+      const grossMargin = Number(el.gm.value) / 100;
+      const retainerPrice = Number(el.retPrice.value); // triệu
+      const retainerClients = Number(el.retClients.value);
+      const fixedCost = Number(el.fixed.value); // triệu
+
+      el.ppmLabel.textContent = projectsPerMonth;
+      el.gmLabel.textContent = Math.round(grossMargin * 100);
+      el.rcLabel.textContent = retainerClients;
+
+      // 1-month snapshot
+      const projectRevenue = projectsPerMonth * avgProjectPrice;
+      const retainerRevenue = retainerClients * retainerPrice;
+      const totalRevenue = projectRevenue + retainerRevenue;
+      const grossProfit = totalRevenue * grossMargin;
+      const preTax = grossProfit - fixedCost;
+
+      // Breakeven revenue = fixed / margin
+      const breakeven = grossMargin > 0 ? (fixedCost / grossMargin) : 0;
+
+      // Update KPI
+      el.kpiRevenue.textContent = fmt(totalRevenue);
+      el.kpiGross.textContent = fmt(grossProfit);
+      el.kpiPreTax.textContent = fmt(preTax);
+      el.kpiBreakeven.textContent = fmt(breakeven);
+
+      // Update table
+      el.tProject.textContent = fmt(projectRevenue);
+      el.tRet.textContent = fmt(retainerRevenue);
+      el.tTotal.textContent = fmt(totalRevenue);
+      el.tGross.textContent = fmt(grossProfit);
+      el.tFixed.textContent = fmt(fixedCost);
+      el.tPreTax.textContent = fmt(preTax);
+
+      // 12-month simulation (simple):
+      // - Keep projectsPerMonth constant
+      // - Retainer grows slowly: assume +1 client/month until reaching chosen retainerClients
+      //   This mimics: dự án go-live → convert sang retainer.
+      const rev = [];
+      const profit = [];
+      let curRet = Math.max(0, Math.min(retainerClients, Math.floor(retainerClients / 2))); // start at half
+      const growth = retainerClients > curRet ? Math.ceil((retainerClients - curRet) / 6) : 0; // ramp in ~6 months
+
+      for (let i=0; i<12; i++){
+        if (i > 0 && curRet < retainerClients) curRet = Math.min(retainerClients, curRet + Math.max(1, growth));
+        const r = (projectsPerMonth * avgProjectPrice) + (curRet * retainerPrice);
+        const gp = r * grossMargin;
+        const pt = gp - fixedCost;
+        rev.push(r);
+        profit.push(pt);
+      }
+
+      cashChart.data.datasets[0].data = rev;
+      cashChart.data.datasets[1].data = profit;
+      cashChart.update();
+    }
+
+    // Bind events
+    ["input","change"].forEach(ev => {
+      el.ppm.addEventListener(ev, recalc);
+      el.gm.addEventListener(ev, recalc);
+      el.retClients.addEventListener(ev, recalc);
+      el.price.addEventListener(ev, recalc);
+      el.retPrice.addEventListener(ev, recalc);
+      el.fixed.addEventListener(ev, recalc);
+    });
+
+    recalc();
+  </script>
+</body>
+</html>
