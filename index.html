@@ -1,1508 +1,588 @@
 <!doctype html>
 <html lang="vi">
-
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hoang Anh Technology – Số hoá & Tự động hoá quy trình</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hoang Anh Technology | Giảm chi phí</title>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Font Awesome (Awesome icons) -->
+  <!-- Font Awesome (Icons) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
-    :root {
-      --bg1: #0b1220;
-      --bg2: #101a33;
-      --card: rgba(255, 255, 255, .06);
-      --stroke: rgba(255, 255, 255, .12);
-      --text: rgba(255, 255, 255, .88);
-      --muted: rgba(255, 255, 255, .62);
-      --accent1: #7c3aed;
-      --accent2: #06b6d4;
+    :root{
+      --bg:#0b1220;
+      --card:#101a2f;
+      --text:#eaf0ff;
+      --muted:#a9b7d6;
+      --line:rgba(255,255,255,.12);
+      --accent:#4fd1c5;
+      --accent2:#60a5fa;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --danger:#fb7185;
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
     }
-
-    body {
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       background:
-        radial-gradient(1200px 600px at 10% 10%, rgba(124, 58, 237, .25), transparent 60%),
-        radial-gradient(1000px 500px at 90% 20%, rgba(6, 182, 212, .18), transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      color: var(--text);
+        radial-gradient(1200px 600px at 20% 0%, rgba(96,165,250,.18), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(79,209,197,.18), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.7;
     }
-
-    .grid-bg {
-      background-image:
-        linear-gradient(to right, rgba(255, 255, 255, .06) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, .06) 1px, transparent 1px);
-      background-size: 28px 28px;
-      mask-image: radial-gradient(circle at 50% 0%, black 0%, transparent 65%);
-    }
-
-    .glass {
-      border: 1px solid var(--stroke);
+    .wrap{max-width:1040px;margin:0 auto;padding:18px 16px 70px}
+    /* Top bar */
+    .top{
+      border:1px solid var(--line);
+      border-radius:18px;
+      background: rgba(16,26,47,.76);
+      padding:14px 14px;
+      position:sticky; top:12px; z-index:10;
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
     }
-
-    .soft {
-      box-shadow: 0 18px 70px rgba(0, 0, 0, .35);
+    .topRow{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    .brand{display:flex;gap:12px;align-items:flex-start}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      box-shadow: 0 18px 40px rgba(96,165,250,.22);
+      flex:0 0 auto;
     }
-
-    .chip {
-      border: 1px solid rgba(255, 255, 255, .16);
-      background: rgba(255, 255, 255, .05);
+    h1{margin:0;font-size:18px;line-height:1.25}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .nav{display:flex;gap:10px;flex-wrap:wrap}
+    .nav a{
+      text-decoration:none;color:var(--muted);
+      font-size:13px;padding:8px 10px;border-radius:12px;border:1px solid transparent;
     }
-
-    .link {
-      text-decoration: none;
-      border-bottom: 1px dashed rgba(255, 255, 255, .35);
+    .nav a:hover{border-color:var(--line);color:var(--text)}
+    /* Cards + layout */
+    .hero{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background: rgba(16,26,47,.70);
+      padding:22px 18px;
+      box-shadow: var(--shadow);
     }
-
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    .tag{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:7px 10px;border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:13px;
     }
-
-    .kpi {
-      background: linear-gradient(135deg, rgba(124, 58, 237, .20), rgba(6, 182, 212, .14));
-      border: 1px solid rgba(255, 255, 255, .14);
+    .tag i{opacity:.9}
+    .dot{width:8px;height:8px;border-radius:99px;background:var(--accent)}
+    h2{margin:12px 0 8px;font-size:30px;line-height:1.18}
+    p{margin:0;color:var(--muted)}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:11px 12px;border-radius:14px;border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      text-decoration:none;color:var(--text);
+      font-size:14px;
     }
-
-    .badge-ok {
-      background: rgba(34, 197, 94, .14);
-      border: 1px solid rgba(34, 197, 94, .28);
-      color: rgba(187, 247, 208, .95);
+    .btn.primary{
+      border-color: rgba(79,209,197,.40);
+      background: linear-gradient(135deg, rgba(96,165,250,.18), rgba(79,209,197,.18));
+      box-shadow: 0 16px 32px rgba(79,209,197,.12);
     }
-
-    .badge-warn {
-      background: rgba(245, 158, 11, .14);
-      border: 1px solid rgba(245, 158, 11, .28);
-      color: rgba(254, 243, 199, .95);
+    .btn i{opacity:.95}
+    .grid{display:grid;gap:14px;margin-top:14px;grid-template-columns:repeat(12,1fr)}
+    .card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      background: rgba(16,26,47,.65);
+      padding:16px;
+      box-shadow: 0 14px 32px rgba(0,0,0,.18);
     }
-
-    .badge-info {
-      background: rgba(59, 130, 246, .14);
-      border: 1px solid rgba(59, 130, 246, .28);
-      color: rgba(191, 219, 254, .95);
+    .card h3{margin:0 0 10px;font-size:19px}
+    .muted{color:var(--muted)}
+    .divider{height:1px;background:var(--line);margin:12px 0}
+    ul{margin:8px 0 0 18px;color:var(--muted)}
+    li{margin:6px 0}
+    .iconTitle{display:flex;align-items:center;gap:10px}
+    .iconTitle i{
+      width:34px;height:34px;border-radius:12px;
+      display:inline-flex;align-items:center;justify-content:center;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color:#d6e5ff;
+      flex:0 0 auto;
     }
-
-    /* Stepper */
-    .step-line {
-      height: 2px;
-      background: rgba(255, 255, 255, .16);
+    .pillRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 10px;border-radius:999px;border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color:var(--muted);font-size:12px;
     }
-
-    .step-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .25);
-      border: 1px solid rgba(255, 255, 255, .20);
+    .pill.ok{border-color: rgba(52,211,153,.35); color:#c7ffe7}
+    .pill.warn{border-color: rgba(251,191,36,.35); color:#ffe7b2}
+    .callout{
+      border:1px solid rgba(79,209,197,.28);
+      background: linear-gradient(135deg, rgba(79,209,197,.10), rgba(96,165,250,.08));
+      border-radius:16px;
+      padding:14px;
+      margin-top:12px;
     }
-
-    .step-dot.active {
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      box-shadow: 0 0 0 6px rgba(124, 58, 237, .12);
+    .callout b{color:var(--text)}
+    /* Tiles */
+    .tiles{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px}
+    @media (max-width:820px){ .tiles{grid-template-columns:1fr} }
+    .tile{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      padding:14px;
     }
-
-    /* Inputs */
-    input[type="range"] {
-      accent-color: #7c3aed;
+    .tile b{display:block;margin-bottom:6px;color:var(--text)}
+    .tile .small{font-size:13px;color:var(--muted)}
+    /* Table */
+    table{
+      width:100%;
+      border-collapse:separate;border-spacing:0;
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      background: rgba(16,26,47,.65);
+      margin-top:10px;
     }
-
-    input[type="number"] {
-      background: rgba(255, 255, 255, .06);
-      border: 1px solid rgba(255, 255, 255, .14);
-      border-radius: 12px;
-      padding: 10px 12px;
-      width: 100%;
-      color: rgba(255, 255, 255, .88);
-      outline: none;
+    thead th{
+      background: rgba(255,255,255,.04);
+      border-bottom:1px solid var(--line);
+      padding:10px 10px;
+      text-align:right;
+      color:#d6e5ff;
+      font-size:12px;
+      white-space:nowrap;
     }
-
-    input[type="number"]:focus {
-      border-color: rgba(124, 58, 237, .55);
-      box-shadow: 0 0 0 4px rgba(124, 58, 237, .12);
+    thead th:first-child{text-align:left}
+    tbody td{
+      border-bottom:1px solid var(--line);
+      padding:10px 10px;
+      text-align:right;
+      font-size:13px;
+      color:var(--text);
+      vertical-align:top;
     }
-
-    table th {
-      color: rgba(255, 255, 255, .75);
-      font-weight: 600;
+    tbody td:first-child{text-align:left}
+    tbody tr:last-child td{border-bottom:none}
+    .sumrow td{background: rgba(255,255,255,.03);font-weight:800}
+    /* RACI */
+    .raciBadge{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-width:34px;height:26px;padding:0 8px;border-radius:10px;
+      border:1px solid var(--line);font-weight:800;font-size:12px;
+      background: rgba(255,255,255,.03);
+      margin-right:8px;
     }
-
-    table td {
-      color: rgba(255, 255, 255, .78);
+    .raciBadge.A{border-color: rgba(96,165,250,.35); color:#d7e7ff}
+    .raciBadge.R{border-color: rgba(52,211,153,.35); color:#bfffe3}
+    .raciBadge.C{border-color: rgba(251,191,36,.35); color:#ffe6a8}
+    .raciBadge.I{border-color: rgba(255,255,255,.20); color:#eaf0ff}
+    .small{font-size:13px}
+    code.inline{
+      background: rgba(255,255,255,.06);
+      padding:2px 6px;border-radius:8px;border:1px solid var(--line);
+      color:#dbe7ff;
     }
-
-    .fa-fw {
-      width: 1.25em;
-      text-align: center;
+    .footer{
+      margin-top:16px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background: rgba(16,26,47,.55);
+      padding:14px;
+      color:var(--muted);
+      font-size:13px;
+      box-shadow: var(--shadow);
     }
   </style>
 </head>
 
-<body class="min-h-screen">
-  <div class="absolute inset-0 grid-bg pointer-events-none"></div>
+<body>
+  <div class="wrap">
 
-  <main class="relative mx-auto max-w-6xl px-4 py-10">
-    <!-- Header -->
-    <header class="glass soft rounded-2xl p-6 md:p-8">
-      <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div>
-          <h1 class="text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-3">
-            <span class="inline-flex items-center justify-center h-10 w-10 rounded-xl kpi">
-              <i class="fa-solid fa-bolt fa-fw"></i>
-            </span>
-            Hoang Anh Technology – Số hoá & Tự động hoá quy trình
-          </h1>
-          <p class="mt-3 text-white/70 max-w-2xl leading-relaxed">
-            Chuẩn hoá & số hoá các quy trình lặp lại (duyệt chi, mua hàng, đối soát, kho, CRM…) thành workflow tự động:
-            nhắc việc theo deadline, phê duyệt theo hạn mức và dashboard realtime.
-            Bạn thấy ngay kẹt ở đâu, ai đang giữ việc, và số liệu “thật” để ra quyết định nhanh.
-            Mỗi bước đều có form chuẩn, phân quyền rõ ràng, theo dõi trạng thái minh bạch.
-            Dữ liệu được tự động tổng hợp, hạn chế nhập liệu thủ công, giảm sai sót và không còn phải chờ Excel tổng
-            hợp cuối ngày/tuần.
-          </p>
-
-          <div class="mt-4 flex flex-wrap gap-2 text-sm">
-            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-building fa-fw"></i> B2B</span>
-            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-people-group fa-fw"></i> SME 20–300</span>
-            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-diagram-project fa-fw"></i> Workflow</span>
-            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-plug fa-fw"></i> Tích hợp</span>
-            <span class="chip rounded-full px-3 py-1"><i class="fa-solid fa-chart-line fa-fw"></i> Dashboard</span>
-            <span class="chip rounded-full px-3 py-1 mono"><i class="fa-solid fa-stopwatch fa-fw"></i> “2 tuần có kết
-              quả”</span>
+    <!-- TOP -->
+    <header class="top">
+      <div class="topRow">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Hoàng Anh Technology </h1>
+            <div class="sub">
+              Hoàng Anh Technology cần Angel hỗ trợ <b>mối quan hệ & khách hàng</b> + <b>quản lý tài chính</b>.
+              Phần kỹ thuật, sản phẩm, triển khai và chất lượng Hoàng Anh Technology chịu trách nhiệm 100%.
+            </div>
           </div>
         </div>
-
-        <div class="glass rounded-2xl p-5 w-full md:w-[380px]">
-          <p class="text-sm text-white/70 flex items-center gap-2">
-            <i class="fa-solid fa-shield-halved fa-fw"></i><b>Cam kết thuyết phục (dễ hiểu):</b>
-          </p>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-check fa-fw text-emerald-300"></i><span>Giảm <b>30–70%</b> thời
-                gian xử lý một quy trình mục tiêu</span></li>
-            <li class="flex gap-2"><i class="fa-solid fa-check fa-fw text-emerald-300"></i><span>Biết <b>kẹt ở đâu</b>,
-                ai đang giữ việc, vì sao chậm</span></li>
-            <li class="flex gap-2"><i class="fa-solid fa-check fa-fw text-emerald-300"></i><span>Báo cáo “thật” theo
-                ngày/tuần thay vì chờ tổng hợp Excel</span></li>
-          </ul>
-        
-        </div>
+        <nav class="nav" aria-label="Điều hướng">
+          <a href="#one-liner"><i class="fa-solid fa-bullseye"></i> One-liner</a>
+          <a href="#why"><i class="fa-solid fa-coins"></i> Vì sao đáng</a>
+          <a href="#ai"><i class="fa-solid fa-brain"></i> AI</a>
+          <a href="#roles"><i class="fa-solid fa-people-group"></i> Vai trò</a>
+          <a href="#plan"><i class="fa-solid fa-calendar-check"></i> 12 tháng</a>
+          <a href="#numbers"><i class="fa-solid fa-chart-line"></i> Kỳ vọng</a>
+          <a href="#raci"><i class="fa-solid fa-table"></i> RACI</a>
+          <a href="#ask"><i class="fa-solid fa-handshake"></i> Đề nghị</a>
+        </nav>
       </div>
     </header>
 
-    <!-- Nav -->
-    <nav class="mt-6 glass soft rounded-2xl p-4">
-      <div class="flex flex-wrap gap-3 text-sm text-white/80">
-        <a class="link" href="#product"><i class="fa-solid fa-box-open fa-fw"></i> Sản phẩm/Dịch vụ</a>
-        <a class="link" href="#factory"><i class="fa-solid fa-industry fa-fw"></i> Quy trình “sản xuất” cho khách</a>
-        <a class="link" href="#revenue"><i class="fa-solid fa-coins fa-fw"></i> Doanh thu & Thu nhập</a>
-        <a class="link" href="#ops"><i class="fa-solid fa-gears fa-fw"></i> Operations</a>
-        <a class="link" href="#risk"><i class="fa-solid fa-lock fa-fw"></i> Rủi ro & Bảo mật</a>
-      </div>
-    </nav>
+    <!-- HERO -->
+    <section class="hero" id="one-liner">
+      <span class="tag"><span class="dot"></span>
+        <i class="fa-solid fa-layer-group"></i> Odoo theo module
+        &nbsp;•&nbsp; <i class="fa-solid fa-bolt"></i> triển khai nhanh
+        &nbsp;•&nbsp; <i class="fa-solid fa-coins"></i> giảm chi phí vận hành
+      </span>
 
-    <!-- PRODUCT -->
-    <section id="product" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div>
-          <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
-            <i class="fa-solid fa-box-open fa-fw"></i> Sản phẩm/Dịch vụ
-          </h2>
-          <p class="mt-2 text-white/70">
-            Bán theo <b>gói + kết quả</b>, không bán “làm theo yêu cầu vô hạn”.
-          </p>
-        </div>
-        <div class="flex flex-wrap gap-2 text-xs">
-          <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-wand-magic-sparkles fa-fw"></i>
-            Quick-win trong 14 ngày</span>
-          <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-list-check fa-fw"></i> Template theo
-            ngành</span>
-          <span class="badge-warn rounded-full px-3 py-1"><i class="fa-solid fa-sitemap fa-fw"></i> Scope rõ + nghiệm
-            thu theo mốc</span>
-        </div>
-      </div>
+      <h2>Hoàng Anh Technology giúp doanh nghiệp Việt giảm chi phí bằng số hoá quy trình — làm từng phần, chạy thật, đo hiệu quả</h2>
 
-      <div class="mt-6 grid md:grid-cols-3 gap-4">
-        <div class="glass rounded-2xl p-5">
-          <div class="flex items-center justify-between">
-            <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-rocket fa-fw"></i> Gói 1: Starter
-            </h3>
-            <span class="chip rounded-full px-3 py-1 text-xs">2–3 tuần</span>
-          </div>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> 3–5 quy trình</li>
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Form chuẩn + phân
-              quyền</li>
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> 1 dashboard cơ bản
-            </li>
-          </ul>
-          <p class="mt-3 text-sm text-white/70"><b>Giá tham khảo:</b> 30–80 triệu</p>
-          <p class="mt-1 text-xs text-white/60">Dành cho DN muốn thấy hiệu quả nhanh để quyết định mở rộng.</p>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <div class="flex items-center justify-between">
-            <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-gears fa-fw"></i> Gói 2: Standard
-            </h3>
-            <span class="chip rounded-full px-3 py-1 text-xs">4–8 tuần</span>
-          </div>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> 10–20 quy trình</li>
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Tích hợp (kế
-              toán/CRM/kho)</li>
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> KPI + báo cáo theo
-              ngày/tuần</li>
-          </ul>
-          <p class="mt-3 text-sm text-white/70"><b>Giá tham khảo:</b> 80–200+ triệu</p>
-          <p class="mt-1 text-xs text-white/60">Gói “xương sống” tạo hiệu quả vận hành rõ nhất.</p>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <div class="flex items-center justify-between">
-            <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-handshake fa-fw"></i> Gói 3:
-              Retainer</h3>
-            <span class="chip rounded-full px-3 py-1 text-xs">Theo tháng</span>
-          </div>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Hỗ trợ + sửa/tối ưu
-            </li>
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Thêm workflow theo
-              nhu cầu</li>
-            <li class="flex gap-2"><i class="fa-solid fa-circle-check fa-fw text-emerald-300"></i> Monthly review KPI
-            </li>
-          </ul>
-          <p class="mt-3 text-sm text-white/70"><b>Giá tham khảo:</b> 5–30 triệu/tháng</p>
-          <p class="mt-1 text-xs text-white/60">Giữ hệ thống “sống”, tránh mua xong để đó.</p>
-        </div>
-      </div>
-
-      <div class="mt-6 glass rounded-2xl p-5">
-        <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-crosshairs fa-fw"></i> Khác gì đối thủ
-          (nói kiểu người ngoài ngành)</h3>
-        <div class="mt-3 grid md:grid-cols-3 gap-4 text-sm text-white/75">
-          <div class="chip rounded-2xl p-4">
-            <p class="font-semibold"><i class="fa-solid fa-stopwatch fa-fw"></i> Thấy kết quả nhanh</p>
-            <p class="mt-1">2 tuần đầu phải có 1–2 quy trình chạy thật để tạo niềm tin.</p>
-          </div>
-          <div class="chip rounded-2xl p-4">
-            <p class="font-semibold"><i class="fa-solid fa-copy fa-fw"></i> Có “mẫu” sẵn theo ngành</p>
-            <p class="mt-1">Không làm lại từ đầu mỗi lần → nhanh hơn, ít lỗi hơn.</p>
-          </div>
-          <div class="chip rounded-2xl p-4">
-            <p class="font-semibold"><i class="fa-solid fa-plug-circle-check fa-fw"></i> Kết nối cái khách đang dùng</p>
-            <p class="mt-1">Không ép thay toàn bộ hệ thống → giảm rủi ro và chi phí.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FACTORY: PROCESS -->
-    <section id="factory" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
-      <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
-        <i class="fa-solid fa-industry fa-fw"></i> Quy trình “sản xuất/triển khai sản phẩm” cho khách hàng (thuyết phục
-        & rõ ràng)
-      </h2>
-      <p class="mt-2 text-white/70">
-        Đây là cách làm để khách tin: <b>không mơ hồ</b>, có <b>đầu ra (deliverables)</b>, có <b>tiêu chí nghiệm
-          thu</b>, có <b>kế hoạch dự phòng</b>.
+      <p>
+        Doanh nghiệp Việt “mất tiền” chủ yếu vì <b>chờ duyệt</b>, <b>nhập tay</b>, <b>sai số</b>, <b>báo cáo chậm</b> và <b>thiếu minh bạch trách nhiệm</b>.
+        Hoang Anh Technology  triển khai nền tảng quản trị doanh nghiệp dựa trên <b>Odoo</b> theo kiểu <b>module</b>:
+        chọn phần đau nhất làm trước (duyệt chi/mua/kho/bán/CSKH), triển khai nhanh để chạy thật, rồi mở rộng dần.
       </p>
 
-      <!-- Stepper -->
-      <div class="mt-6">
-        <div class="grid grid-cols-6 items-center gap-3">
-          <div class="flex flex-col items-center gap-2">
-            <div class="step-dot active"></div>
-            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-magnifying-glass fa-fw"></i> 1. Khảo
-              sát</div>
-          </div>
-          <div class="step-line"></div>
-          <div class="flex flex-col items-center gap-2">
-            <div class="step-dot active"></div>
-            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-pen-ruler fa-fw"></i> 2. Thiết kế</div>
-          </div>
-          <div class="step-line"></div>
-          <div class="flex flex-col items-center gap-2">
-            <div class="step-dot active"></div>
-            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-screwdriver-wrench fa-fw"></i> 3. Xây
-              dựng</div>
-          </div>
-          <div class="step-line"></div>
-          <div class="flex flex-col items-center gap-2">
-            <div class="step-dot active"></div>
-            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-vial-circle-check fa-fw"></i> 4. Kiểm
-              thử</div>
-          </div>
-          <div class="step-line"></div>
-          <div class="flex flex-col items-center gap-2">
-            <div class="step-dot active"></div>
-            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-rocket fa-fw"></i> 5. Go-live</div>
-          </div>
-          <div class="step-line"></div>
-          <div class="flex flex-col items-center gap-2">
-            <div class="step-dot active"></div>
-            <div class="text-xs text-white/70 text-center"><i class="fa-solid fa-chart-line fa-fw"></i> 6. Tối ưu</div>
-          </div>
-        </div>
+      <div class="pillRow">
+        <span class="pill ok"><i class="fa-solid fa-stopwatch"></i> 14 ngày: có module đầu tiên chạy thật</span>
+        <span class="pill"><i class="fa-solid fa-receipt"></i> Trả theo phần dùng: minh bạch chi phí</span>
+        <span class="pill"><i class="fa-solid fa-chart-simple"></i> Đo trước/sau: thấy “đáng tiền”</span>
       </div>
 
-      <!-- Detailed steps -->
-      <div class="mt-6 grid lg:grid-cols-2 gap-4">
-        <div class="glass rounded-2xl p-5">
-          <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-magnifying-glass fa-fw"></i> 1) Khảo
-            sát & Chốt “bài toán đinh” (1–3 ngày)</h3>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-file-lines fa-fw"></i> Thu thập hiện trạng: đang làm bằng
-              Excel/Zalo/email gì?</li>
-            <li class="flex gap-2"><i class="fa-solid fa-triangle-exclamation fa-fw"></i> Tìm điểm nghẽn: chậm duyệt,
-              thiếu chứng từ, sai số, thất thoát…</li>
-            <li class="flex gap-2"><i class="fa-solid fa-bullseye fa-fw"></i> Chọn 1–2 quy trình “đinh” để làm quick-win
-              trong 2 tuần</li>
-          </ul>
-          <div class="mt-4 text-xs text-white/70">
-            <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-box-archive fa-fw"></i>
-              Deliverables:</span>
-            <span class="ml-2">Bản vẽ quy trình (Thực Trạng), danh sách vấn đề, KPI mục tiêu</span>
-          </div>
-          <div class="mt-2 text-xs text-white/70">
-            <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-stamp fa-fw"></i> Nghiệm thu:</span>
-            <span class="ml-2">Khách xác nhận đúng quy trình & KPI đo được</span>
-          </div>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-pen-ruler fa-fw"></i> 2) Thiết kế giải
-            pháp (To-be) & Scope (2–4 ngày)</h3>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-sitemap fa-fw"></i> Thiết kế luồng duyệt: ai duyệt, hạn mức,
-              thời gian nhắc việc</li>
-            <li class="flex gap-2"><i class="fa-solid fa-user-shield fa-fw"></i> Phân quyền dữ liệu: ai xem/ai sửa/ai
-              xuất báo cáo</li>
-            <li class="flex gap-2"><i class="fa-solid fa-plug fa-fw"></i> Chốt tích hợp: lấy dữ liệu từ đâu, đẩy sang
-              đâu (kế toán/CRM/kho)</li>
-          </ul>
-          <div class="mt-4 text-xs text-white/70">
-            <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-box-archive fa-fw"></i>
-              Deliverables:</span>
-            <span class="ml-2">Tài liệu To-be + danh sách form + checklist dữ liệu</span>
-          </div>
-          <div class="mt-2 text-xs text-white/70">
-            <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-stamp fa-fw"></i> Nghiệm thu:</span>
-            <span class="ml-2">Ký scope + timeline + milestone thanh toán</span>
-          </div>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-screwdriver-wrench fa-fw"></i> 3) Xây
-            dựng theo Sprint (1–2 tuần/sprint)</h3>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-square-check fa-fw"></i> Mỗi sprint ra “tính năng chạy được”
-              (không nói suông)</li>
-            <li class="flex gap-2"><i class="fa-solid fa-bell fa-fw"></i> Tự động nhắc việc/nhắc duyệt, hạn chế “đợi
-              nhau”</li>
-            <li class="flex gap-2"><i class="fa-solid fa-database fa-fw"></i> Chuẩn hóa dữ liệu đầu vào để giảm sai</li>
-          </ul>
-          <div class="mt-4 text-xs text-white/70">
-            <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-box-archive fa-fw"></i>
-              Deliverables:</span>
-            <span class="ml-2">Workflow + form + phân quyền + bản demo</span>
-          </div>
-          <div class="mt-2 text-xs text-white/70">
-            <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-stamp fa-fw"></i> Nghiệm thu:</span>
-            <span class="ml-2">Demo theo kịch bản thật của khách</span>
-          </div>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-vial-circle-check fa-fw"></i> 4) Kiểm
-            thử/UAT & Go-live an toàn (3–7 ngày)</h3>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-flask fa-fw"></i> Test bằng dữ liệu mẫu → rồi test bằng dữ liệu
-              thật (có kiểm soát)</li>
-            <li class="flex gap-2"><i class="fa-solid fa-rotate-left fa-fw"></i> Có kế hoạch rollback (quay về cách cũ
-              tạm thời nếu lỗi)</li>
-            <li class="flex gap-2"><i class="fa-solid fa-graduation-cap fa-fw"></i> Đào tạo: 60–90 phút + video + SOP
-              (để không “mua xong bỏ”)</li>
-          </ul>
-          <div class="mt-4 text-xs text-white/70">
-            <span class="badge-info rounded-full px-3 py-1"><i class="fa-solid fa-box-archive fa-fw"></i>
-              Deliverables:</span>
-            <span class="ml-2">Biên bản test, checklist go-live, SOP + video</span>
-          </div>
-          <div class="mt-2 text-xs text-white/70">
-            <span class="badge-ok rounded-full px-3 py-1"><i class="fa-solid fa-stamp fa-fw"></i> Nghiệm thu:</span>
-            <span class="ml-2">Chạy thật 1–2 tuần ổn định + KPI bắt đầu đo được</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-6 glass rounded-2xl p-5">
-        <h3 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-crown fa-fw"></i> “Điểm ăn tiền” để
-          khách tin và chịu chi</h3>
-        <div class="mt-3 grid md:grid-cols-3 gap-4 text-sm text-white/75">
-          <div class="chip rounded-2xl p-4">
-            <p class="font-semibold"><i class="fa-solid fa-money-bill-trend-up fa-fw"></i> ROI nói bằng con số</p>
-            <p class="mt-1">Ví dụ: giảm 300 giờ/tháng → quy ra chi phí nhân sự + giảm sai sót.</p>
-          </div>
-          <div class="chip rounded-2xl p-4">
-            <p class="font-semibold"><i class="fa-solid fa-tower-broadcast fa-fw"></i> Minh bạch tiến độ</p>
-            <p class="mt-1">Mỗi sprint đều demo, khách thấy rõ đang làm tới đâu.</p>
-          </div>
-          <div class="chip rounded-2xl p-4">
-            <p class="font-semibold"><i class="fa-solid fa-lock fa-fw"></i> Bảo mật & phân quyền</p>
-            <p class="mt-1">Ai được xem gì, log truy cập, NDA trước khi nhận dữ liệu.</p>
-          </div>
-        </div>
+      <div class="cta">
+        <a class="btn primary" href="#ask"><i class="fa-solid fa-handshake"></i> Hoàng Anh Technology muốn hỗ trợ giới thiệu</a>
+        <a class="btn" href="#numbers"><i class="fa-solid fa-chart-line"></i> Xem bảng kỳ vọng (1 khách)</a>
       </div>
     </section>
 
-    <!-- TIMELINE: Quy trình triển khai -->
-    <section id="implementation-timeline" class="mt-10">
-      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8">
-        <div class="flex items-start justify-between gap-6">
-          <div>
-            <h2 class="text-xl md:text-2xl font-semibold text-white">
-              Quy trình triển khai cho khách hàng (End-to-End)
-            </h2>
-            <p class="mt-2 text-sm md:text-base text-white/70 max-w-3xl leading-relaxed">
-              Làm nhanh – rõ đầu ra – đo được KPI. Mỗi dự án có PM + Tư vấn nghiệp vụ + Kỹ thuật triển khai + CS đồng
-              hành,
-              đảm bảo quy trình chạy thật và báo cáo realtime.
-            </p>
-          </div>
-
-          <div
-            class="hidden md:flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-white/80">
-            <i class="fa-solid fa-stopwatch"></i>
-            <span class="text-sm">Thường 2–6 tuần tuỳ phạm vi</span>
-          </div>
+    <!-- WHY / PROBLEM-SOLUTION -->
+    <section class="grid" id="why">
+      <div class="card" style="grid-column: span 6;">
+        <div class="iconTitle">
+          <i class="fa-solid fa-leak"></i>
+          <h3>Vì sao đây là cơ hội “đáng làm”</h3>
         </div>
-
-        <!-- Vertical timeline -->
-        <ol class="mt-8 relative border-s border-white/10 ms-3">
-          <!-- Step 1 -->
-          <li class="mb-8 ms-6">
-            <span
-              class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/20 text-xs text-white">
-              1
-            </span>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-white font-semibold">
-                  <i class="fa-solid fa-magnifying-glass me-2 text-white/70"></i>
-                  Khảo sát & Tư vấn
-                </h3>
-                <span class="text-xs text-white/60">1–3 ngày</span>
-              </div>
-              <p class="mt-2 text-sm text-white/70 leading-relaxed">
-                Xác định đúng “đau” và phạm vi có ROI rõ ràng: quy trình nào làm trước để thấy kết quả nhanh.
-              </p>
-
-              <div class="mt-4 grid md:grid-cols-3 gap-3 text-sm">
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Nhân sự</div>
-                  <div class="text-white/80">Account/BD • Solution Consultant • BA</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Đầu ra</div>
-                  <div class="text-white/80"> Sơ đồ AS-IS (Hiện Trạng) + điểm nghẽn • KPI mục tiêu • danh sách use-case ưu tiên</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Thu tiền</div>
-                  <div class="text-white/80">Miễn phí/hoặc phí khảo sát (tuỳ dự án)</div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <!-- Step 2 -->
-          <li class="mb-8 ms-6">
-            <span
-              class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/20 text-xs text-white">
-              2
-            </span>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-white font-semibold">
-                  <i class="fa-solid fa-sitemap me-2 text-white/70"></i>
-                  Thiết kế giải pháp & Demo theo dữ liệu thật
-                </h3>
-                <span class="text-xs text-white/60">2–5 ngày</span>
-              </div>
-              <p class="mt-2 text-sm text-white/70 leading-relaxed">
-                Vẽ quy trình TO-BE (workflow, phân quyền, hạn mức duyệt, SLA) và demo luồng chạy thử để khách hàng “nhìn
-                thấy” trước khi ký.
-              </p>
-
-              <div class="mt-4 grid md:grid-cols-3 gap-3 text-sm">
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Nhân sự</div>
-                  <div class="text-white/80">Solution Consultant • BA • Tech Lead</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Đầu ra</div>
-                  <div class="text-white/80">TO-BE • phạm vi • timeline • báo giá sơ bộ</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Thu tiền</div>
-                  <div class="text-white/80">Chốt gói: Setup + Subscription (+ tích hợp)</div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <!-- Step 3 -->
-          <li class="mb-8 ms-6">
-            <span
-              class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/20 text-xs text-white">
-              3
-            </span>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-white font-semibold">
-                  <i class="fa-solid fa-file-signature me-2 text-white/70"></i>
-                  Báo giá & Hợp đồng
-                </h3>
-                <span class="text-xs text-white/60">1–3 ngày</span>
-              </div>
-              <p class="mt-2 text-sm text-white/70 leading-relaxed">
-                Rõ tiền – rõ việc – rõ nghiệm thu: điều khoản SLA, phạm vi, tiêu chí nghiệm thu theo KPI.
-              </p>
-
-              <div class="mt-4 grid md:grid-cols-3 gap-3 text-sm">
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Nhân sự</div>
-                  <div class="text-white/80">Account/BD • PM • Finance/Legal</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Đầu ra</div>
-                  <div class="text-white/80">Hợp đồng • SLA • Acceptance Criteria</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Thu tiền</div>
-                  <div class="text-white/80">Đặt cọc 30–50% phí triển khai</div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <!-- Step 4 -->
-          <li class="mb-8 ms-6">
-            <span
-              class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/20 text-xs text-white">
-              4
-            </span>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-white font-semibold">
-                  <i class="fa-solid fa-rocket me-2 text-white/70"></i>
-                  Pilot 7–14 ngày
-                </h3>
-                <span class="text-xs text-white/60">1–2 tuần</span>
-              </div>
-              <p class="mt-2 text-sm text-white/70 leading-relaxed">
-                Chạy thật 1 quy trình trọng điểm để chứng minh hiệu quả: giảm thời gian xử lý, giảm lỗi, minh bạch hoá
-                điểm kẹt.
-              </p>
-
-              <div class="mt-4 grid md:grid-cols-3 gap-3 text-sm">
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Nhân sự</div>
-                  <div class="text-white/80">PM • BA • Implementation Engineer</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Đầu ra</div>
-                  <div class="text-white/80">1 workflow chạy được • dashboard cơ bản • báo cáo kết quả pilot</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Thu tiền</div>
-                  <div class="text-white/80">Có thể tính phí pilot hoặc gộp vào phí triển khai</div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <!-- Step 5 -->
-          <li class="mb-8 ms-6">
-            <span
-              class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/20 text-xs text-white">
-              5
-            </span>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-white font-semibold">
-                  <i class="fa-solid fa-gears me-2 text-white/70"></i>
-                  Triển khai chính thức
-                </h3>
-                <span class="text-xs text-white/60">1–3 tuần</span>
-              </div>
-              <p class="mt-2 text-sm text-white/70 leading-relaxed">
-                Dựng đầy đủ workflow, form, phân quyền, hạn mức duyệt, nhắc việc tự động, tích hợp ERP/kế
-                toán/Zalo/Email nếu cần.
-              </p>
-
-              <div class="mt-4 grid md:grid-cols-3 gap-3 text-sm">
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Nhân sự</div>
-                  <div class="text-white/80">PM • BA • Tech Lead • Dev/Low-code • Integration • QA</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Đầu ra</div>
-                  <div class="text-white/80">Workflow hoàn chỉnh • dashboard theo vai trò • tài liệu SOP</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Thu tiền</div>
-                  <div class="text-white/80">Thanh toán tiếp 30–40% theo milestone</div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <!-- Step 6 -->
-          <li class="mb-8 ms-6">
-            <span
-              class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/20 text-xs text-white">
-              6
-            </span>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-white font-semibold">
-                  <i class="fa-solid fa-clipboard-check me-2 text-white/70"></i>
-                  UAT – Đào tạo – Go-live
-                </h3>
-                <span class="text-xs text-white/60">3–7 ngày</span>
-              </div>
-              <p class="mt-2 text-sm text-white/70 leading-relaxed">
-                Kiểm thử theo kịch bản, đào tạo theo vai trò (Admin/Approver/User), go-live và theo dõi sát giai đoạn
-                đầu.
-              </p>
-
-              <div class="mt-4 grid md:grid-cols-3 gap-3 text-sm">
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Nhân sự</div>
-                  <div class="text-white/80">PM • QA • Trainer • Customer Success</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Đầu ra</div>
-                  <div class="text-white/80">UAT sign-off • training • go-live • hypercare</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Thu tiền</div>
-                  <div class="text-white/80">Thanh toán phần còn lại + bắt đầu thuê bao</div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <!-- Step 7 -->
-          <li class="ms-6">
-            <span
-              class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/20 text-xs text-white">
-              7
-            </span>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-white font-semibold">
-                  <i class="fa-solid fa-handshake-angle me-2 text-white/70"></i>
-                  Chăm sóc & Tối ưu liên tục
-                </h3>
-                <span class="text-xs text-white/60">Hàng tháng/quý</span>
-              </div>
-              <p class="mt-2 text-sm text-white/70 leading-relaxed">
-                Tối ưu rule, biểu mẫu, dashboard theo dữ liệu sử dụng, mở rộng mô-đun theo roadmap vận hành (mua hàng →
-                kho → CRM → đối soát…).
-              </p>
-
-              <div class="mt-4 grid md:grid-cols-3 gap-3 text-sm">
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Nhân sự</div>
-                  <div class="text-white/80">Customer Success • BA (định kỳ) • Support/Dev (khi cần)</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Đầu ra</div>
-                  <div class="text-white/80">Báo cáo định kỳ • cải tiến liên tục • đề xuất mở rộng</div>
-                </div>
-                <div class="rounded-xl border border-white/10 bg-black/10 p-3">
-                  <div class="text-white/60 text-xs mb-1">Thu tiền</div>
-                  <div class="text-white/80">Thuê bao + add-on + gói tối ưu (retainer)</div>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ol>
-
-        <!-- Optional: Thanh toán theo mốc (mini strip) -->
-        <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5">
-          <div class="flex items-center gap-2 text-white font-semibold">
-            <i class="fa-solid fa-coins text-white/70"></i>
-            Cách tính tiền gợi ý (theo mốc)
-          </div>
-          <div class="mt-3 grid gap-3 md:grid-cols-4 text-sm">
-            <div class="rounded-xl border border-white/10 bg-black/10 p-3 text-white/80">
-              <div class="text-xs text-white/60 mb-1">Ký hợp đồng</div>
-              30–50% phí triển khai
-            </div>
-            <div class="rounded-xl border border-white/10 bg-black/10 p-3 text-white/80">
-              <div class="text-xs text-white/60 mb-1">Hoàn thành Implementation</div>
-              30–40% theo milestone
-            </div>
-            <div class="rounded-xl border border-white/10 bg-black/10 p-3 text-white/80">
-              <div class="text-xs text-white/60 mb-1">Go-live</div>
-              10–20% còn lại
-            </div>
-            <div class="rounded-xl border border-white/10 bg-black/10 p-3 text-white/80">
-              <div class="text-xs text-white/60 mb-1">Sau Go-live</div>
-              Thuê bao tháng/năm + add-on
-            </div>
-          </div>
-          <p class="mt-3 text-xs text-white/60">
-            *Tỷ lệ chỉ là gợi ý. Có thể điều chỉnh theo quy mô, mức tích hợp và cam kết KPI.
-          </p>
-        </div>
-      </div>
-    </section>
-    <!-- 6-step Circular Flow (responsive) -->
-    <section id="process-circle" class="mt-10">
-      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8">
-        <div class="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h2 class="text-xl md:text-2xl font-semibold text-white">
-              Vòng đời sản xuất phần mềm (6 bước)
-            </h2>
-            <p class="mt-2 text-sm md:text-base text-white/70 max-w-3xl leading-relaxed">
-              Quy trình “đóng gói” rõ ràng: <b class="text-white/80">đầu ra từng bước</b>, <b
-                class="text-white/80">người chịu trách nhiệm</b>,
-              và <b class="text-white/80">tiêu chí nghiệm thu</b> để dự án chạy đúng tiến độ – đúng chất lượng.
-            </p>
-          </div>
-
-          <div
-            class="hidden md:flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-white/80">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span class="text-sm">Chốt KPI • UAT • Checklist Go-live</span>
-          </div>
-        </div>
-
-        <style>
-          /* Circle layout */
-          .cycle-wrap {
-            position: relative;
-            width: min(900px, 100%);
-            margin: 0 auto;
-          }
-
-          .cycle-stage {
-            position: relative;
-            height: 560px;
-          }
-
-          .cycle-ring {
-            position: absolute;
-            inset: 0;
-            width: 380px;
-            height: 380px;
-            margin: auto;
-            border-radius: 9999px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02) 60%, rgba(255, 255, 255, 0.00) 100%);
-          }
-
-          .cycle-center {
-            position: absolute;
-            inset: 0;
-            width: 230px;
-            height: 230px;
-            margin: auto;
-            border-radius: 9999px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(255, 255, 255, 0.06);
-            display: grid;
-            place-items: center;
-            text-align: center;
-            padding: 18px;
-          }
-
-          .cycle-items {
-            position: absolute;
-            inset: 0;
-          }
-
-          .cycle-item {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            --radius: 230px;
-            transform:
-              rotate(calc(var(--i) * 60deg)) translate(var(--radius)) rotate(calc(var(--i) * -60deg));
-            width: 240px;
-            margin-left: -120px;
-            margin-top: -52px;
-          }
-
-          /* little connector dot */
-          .cycle-item::before {
-            content: "";
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 10px;
-            height: 10px;
-            border-radius: 9999px;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.20);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.10));
-          }
-
-          /* responsive tweaks */
-          @media (max-width: 1024px) {
-            .cycle-stage {
-              height: 520px;
-            }
-
-            .cycle-ring {
-              width: 340px;
-              height: 340px;
-            }
-
-            .cycle-center {
-              width: 210px;
-              height: 210px;
-            }
-
-            .cycle-item {
-              --radius: 205px;
-              width: 220px;
-              margin-left: -110px;
-            }
-          }
-
-          @media (max-width: 768px) {
-            .cycle-stage {
-              height: auto;
-            }
-          }
-        </style>
-
-        <!-- Desktop / Tablet: Circular -->
-        <div class="cycle-wrap mt-8 hidden md:block">
-          <div class="cycle-stage">
-            <div class="cycle-ring"></div>
-
-            <div class="cycle-center">
-              <div>
-                <div
-                  class="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
-                  <i class="fa-solid fa-rotate"></i>
-                  <span>Continuous Delivery</span>
-                </div>
-                <div class="mt-4 text-white font-semibold text-lg leading-snug">
-                  Software<br />Development Cycle
-                </div>
-                <div class="mt-2 text-white/70 text-sm leading-relaxed">
-                  Rõ phạm vi • Rõ chất lượng • Rõ nghiệm thu
-                </div>
-              </div>
-            </div>
-
-            <div class="cycle-items">
-              <!-- 1 -->
-              <div class="cycle-item" style="--i:0;">
-                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-white font-semibold">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-black/10 text-xs">1</span>
-                      <span>Planning</span>
-                    </div>
-                    <i class="fa-solid fa-calendar-check text-white/60"></i>
-                  </div>
-                  <p class="mt-2 text-xs text-white/70 leading-relaxed">
-                    Chốt mục tiêu, KPI, phạm vi & milestone để kiểm soát tiến độ ngay từ đầu.
-                  </p>
-                  <div class="mt-3 text-[11px] text-white/60">
-                    <b class="text-white/70">Đầu ra:</b> Charter • Timeline • RACI • tiêu chí nghiệm thu tổng
-                  </div>
-                </div>
-              </div>
-
-              <!-- 2 -->
-              <div class="cycle-item" style="--i:1;">
-                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-white font-semibold">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-black/10 text-xs">2</span>
-                      <span>Analysis</span>
-                    </div>
-                    <i class="fa-solid fa-magnifying-glass-chart text-white/60"></i>
-                  </div>
-                  <p class="mt-2 text-xs text-white/70 leading-relaxed">
-                    Làm rõ yêu cầu thật, luồng AS-IS (Hiện trạng)/TO-BE (Tương lai), phân quyền, dữ liệu & tích hợp.
-                  </p>
-                  <div class="mt-3 text-[11px] text-white/60">
-                    <b class="text-white/70">Đầu ra:</b> BRD/URS • User story • Acceptance criteria
-                  </div>
-                </div>
-              </div>
-
-              <!-- 3 -->
-              <div class="cycle-item" style="--i:2;">
-                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-white font-semibold">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-black/10 text-xs">3</span>
-                      <span>Design</span>
-                    </div>
-                    <i class="fa-solid fa-pen-ruler text-white/60"></i>
-                  </div>
-                  <p class="mt-2 text-xs text-white/70 leading-relaxed">
-                    Thiết kế UI/UX + kiến trúc + API để dễ dùng, dễ mở rộng, dễ bảo trì.
-                  </p>
-                  <div class="mt-3 text-[11px] text-white/60">
-                    <b class="text-white/70">Đầu ra:</b> Wireframe • Architecture • DB schema • API spec
-                  </div>
-                </div>
-              </div>
-
-              <!-- 4 -->
-              <div class="cycle-item" style="--i:3;">
-                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-white font-semibold">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-black/10 text-xs">4</span>
-                      <span>Implementation</span>
-                    </div>
-                    <i class="fa-solid fa-code text-white/60"></i>
-                  </div>
-                  <p class="mt-2 text-xs text-white/70 leading-relaxed">
-                    Phát triển theo sprint, demo liên tục, code review và checklist chất lượng.
-                  </p>
-                  <div class="mt-3 text-[11px] text-white/60">
-                    <b class="text-white/70">Đầu ra:</b> Bản chạy theo sprint • Changelog • tài liệu cấu hình
-                  </div>
-                </div>
-              </div>
-
-              <!-- 5 -->
-              <div class="cycle-item" style="--i:4;">
-                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-white font-semibold">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-black/10 text-xs">5</span>
-                      <span>Testing & Integration</span>
-                    </div>
-                    <i class="fa-solid fa-vial-circle-check text-white/60"></i>
-                  </div>
-                  <p class="mt-2 text-xs text-white/70 leading-relaxed">
-                    Unit/Integration/UAT + kiểm tra bảo mật & hiệu năng, tích hợp có log & đối soát.
-                  </p>
-                  <div class="mt-3 text-[11px] text-white/60">
-                    <b class="text-white/70">Đầu ra:</b> Test report • UAT sign-off • checklist go-live • rollback
-                  </div>
-                </div>
-              </div>
-
-              <!-- 6 -->
-              <div class="cycle-item" style="--i:5;">
-                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-white font-semibold">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-black/10 text-xs">6</span>
-                      <span>Maintenance</span>
-                    </div>
-                    <i class="fa-solid fa-screwdriver-wrench text-white/60"></i>
-                  </div>
-                  <p class="mt-2 text-xs text-white/70 leading-relaxed">
-                    Vận hành theo SLA, theo dõi KPI, tối ưu liên tục dựa trên dữ liệu sử dụng.
-                  </p>
-                  <div class="mt-3 text-[11px] text-white/60">
-                    <b class="text-white/70">Đầu ra:</b> Báo cáo định kỳ • roadmap tối ưu • nâng cấp mô-đun
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- mini proof bar -->
-          <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-white/80">
-              <div class="flex items-center gap-2 font-semibold">
-                <i class="fa-solid fa-bullseye text-white/60"></i> Rõ KPI
-              </div>
-              <p class="mt-1 text-sm text-white/70">Đo trước/sau, không “cảm tính”.</p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-white/80">
-              <div class="flex items-center gap-2 font-semibold">
-                <i class="fa-solid fa-clipboard-check text-white/60"></i> Rõ nghiệm thu
-              </div>
-              <p class="mt-1 text-sm text-white/70">Acceptance Criteria + UAT sign-off.</p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-white/80">
-              <div class="flex items-center gap-2 font-semibold">
-                <i class="fa-solid fa-shield-halved text-white/60"></i> Giảm rủi ro Go-live
-              </div>
-              <p class="mt-1 text-sm text-white/70">Checklist + rollback + logging.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mobile: Vertical list -->
-        <div class="mt-8 md:hidden">
-          <ol class="space-y-3">
-            <li class="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div class="flex items-center justify-between">
-                <div class="text-white font-semibold"><span class="me-2 text-white/60">1.</span>Planning</div>
-                <i class="fa-solid fa-calendar-check text-white/60"></i>
-              </div>
-              <p class="mt-2 text-sm text-white/70">Chốt mục tiêu, KPI, phạm vi & milestone.</p>
-            </li>
-            <li class="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div class="flex items-center justify-between">
-                <div class="text-white font-semibold"><span class="me-2 text-white/60">2.</span>Analysis</div>
-                <i class="fa-solid fa-magnifying-glass-chart text-white/60"></i>
-              </div>
-              <p class="mt-2 text-sm text-white/70">Làm rõ yêu cầu thật, quy trình, phân quyền, dữ liệu.</p>
-            </li>
-            <li class="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div class="flex items-center justify-between">
-                <div class="text-white font-semibold"><span class="me-2 text-white/60">3.</span>Design</div>
-                <i class="fa-solid fa-pen-ruler text-white/60"></i>
-              </div>
-              <p class="mt-2 text-sm text-white/70">Thiết kế UI/UX + kiến trúc + API.</p>
-            </li>
-            <li class="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div class="flex items-center justify-between">
-                <div class="text-white font-semibold"><span class="me-2 text-white/60">4.</span>Implementation</div>
-                <i class="fa-solid fa-code text-white/60"></i>
-              </div>
-              <p class="mt-2 text-sm text-white/70">Phát triển theo sprint, demo liên tục, review chất lượng.</p>
-            </li>
-            <li class="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div class="flex items-center justify-between">
-                <div class="text-white font-semibold"><span class="me-2 text-white/60">5.</span>Testing & Integration
-                </div>
-                <i class="fa-solid fa-vial-circle-check text-white/60"></i>
-              </div>
-              <p class="mt-2 text-sm text-white/70">Test đa tầng + tích hợp có log/đối soát.</p>
-            </li>
-            <li class="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div class="flex items-center justify-between">
-                <div class="text-white font-semibold"><span class="me-2 text-white/60">6.</span>Maintenance</div>
-                <i class="fa-solid fa-screwdriver-wrench text-white/60"></i>
-              </div>
-              <p class="mt-2 text-sm text-white/70">Vận hành theo SLA, theo dõi KPI, tối ưu liên tục.</p>
-            </li>
-          </ol>
-        </div>
-      </div>
-    </section>
-
-    <!-- REVENUE -->
-    <section id="revenue" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div>
-          <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
-            <i class="fa-solid fa-coins fa-fw"></i> Doanh thu & Thu nhập (mô phỏng)
-          </h2>
-          <p class="mt-2 text-white/70">
-            Bạn kéo các thông số bên dưới để thấy <b>doanh thu</b>, <b>lợi nhuận gộp</b>, <b>lợi nhuận trước thuế</b>
-            thay đổi.
-          </p>
-        </div>
-        <div class="text-xs text-white/60 flex items-center gap-2">
-          <i class="fa-solid fa-circle-info fa-fw"></i>
-          Con số là mô phỏng để lập kế hoạch, thực tế phụ thuộc công nợ & tốc độ triển khai.
-        </div>
+        <ul>
+          <li><b><i class="fa-solid fa-building"></i> Nhu cầu lớn & lặp lại:</b> doanh nghiệp nào cũng có bán hàng, mua hàng, kho, duyệt chi.</li>
+          <li><b><i class="fa-solid fa-layer-group"></i> Bán theo module:</b> vào cửa thấp → dễ quyết, dễ mở rộng theo thời gian.</li>
+          <li><b><i class="fa-solid fa-rotate"></i> Doanh thu đều:</b> sau triển khai có gói duy trì hàng tháng (vận hành & tối ưu).</li>
+          <li><b><i class="fa-solid fa-badge-check"></i> Giá trị rõ:</b> giảm thời gian xử lý, giảm trễ hạn, giảm sai số → quy ra tiền.</li>
+        </ul>
+        <div class="divider"></div>
+        <span class="pill warn"><i class="fa-solid fa-face-smile"></i> Tâm lý Việt: tin khi thấy hiệu quả nhanh & rõ</span>
       </div>
 
-      <!-- Inputs -->
-      <div class="mt-6 grid lg:grid-cols-3 gap-4">
-        <div class="glass rounded-2xl p-5">
-          <p class="text-sm font-semibold flex items-center gap-2">
-            <i class="fa-solid fa-briefcase fa-fw"></i> Dự án / tháng
-          </p>
-          <div class="mt-3">
-            <input id="projectsPerMonth" type="range" min="0" max="6" step="1" value="2" class="w-full">
-            <div class="mt-2 flex items-center justify-between text-xs text-white/65">
-              <span>0</span><span class="mono">Hiện tại: <b id="ppmLabel">2</b></span><span>6</span>
-            </div>
-          </div>
-
-          <p class="mt-5 text-sm font-semibold flex items-center gap-2">
-            <i class="fa-solid fa-tag fa-fw"></i> Giá TB / dự án (triệu VNĐ)
-          </p>
-          <div class="mt-3">
-            <input id="avgProjectPrice" type="number" value="120" min="10" step="5">
-            <p class="mt-2 text-xs text-white/60"><i class="fa-solid fa-lightbulb fa-fw"></i> Gợi ý: 80–200 (tuỳ scope)
-            </p>
-          </div>
+      <div class="card" style="grid-column: span 6;">
+        <div class="iconTitle">
+          <i class="fa-solid fa-route"></i>
+          <h3>Cách làm (để giảm rủi ro cho cả khách & công ty)</h3>
         </div>
-
-        <div class="glass rounded-2xl p-5">
-          <p class="text-sm font-semibold flex items-center gap-2">
-            <i class="fa-solid fa-percent fa-fw"></i> Biên lợi nhuận gộp (%)
-          </p>
-          <div class="mt-3">
-            <input id="grossMargin" type="range" min="35" max="85" step="1" value="60" class="w-full">
-            <div class="mt-2 flex items-center justify-between text-xs text-white/65">
-              <span>35%</span><span class="mono">Hiện tại: <b id="gmLabel">60</b>%</span><span>85%</span>
-            </div>
-          </div>
-
-          <p class="mt-5 text-sm font-semibold flex items-center gap-2">
-            <i class="fa-solid fa-handshake fa-fw"></i> Retainer / khách / tháng (triệu)
-          </p>
-          <div class="mt-3">
-            <input id="retainerPrice" type="number" value="10" min="1" step="1">
-            <p class="mt-2 text-xs text-white/60"><i class="fa-solid fa-lightbulb fa-fw"></i> Gợi ý: 5–30</p>
-          </div>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <p class="text-sm font-semibold flex items-center gap-2">
-            <i class="fa-solid fa-users fa-fw"></i> Số khách Retainer tích luỹ
-          </p>
-          <div class="mt-3">
-            <input id="retainerClients" type="range" min="0" max="30" step="1" value="8" class="w-full">
-            <div class="mt-2 flex items-center justify-between text-xs text-white/65">
-              <span>0</span><span class="mono">Hiện tại: <b id="rcLabel">8</b></span><span>30</span>
-            </div>
-          </div>
-
-          <p class="mt-5 text-sm font-semibold flex items-center gap-2">
-            <i class="fa-solid fa-receipt fa-fw"></i> Chi phí cố định / tháng (triệu)
-          </p>
-          <div class="mt-3">
-            <input id="fixedCost" type="number" value="120" min="10" step="5">
-            <p class="mt-2 text-xs text-white/60"><i class="fa-solid fa-lightbulb fa-fw"></i> Gồm lương + công cụ +
-              marketing</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- KPI Cards -->
-      <div class="mt-6 grid md:grid-cols-4 gap-4">
-        <div class="kpi rounded-2xl p-5 soft">
-          <p class="text-xs text-white/70"><i class="fa-solid fa-sack-dollar fa-fw"></i> Doanh thu/tháng</p>
-          <p class="mt-2 text-2xl font-bold mono" id="kpiRevenue">0</p>
-          <p class="mt-1 text-xs text-white/60">triệu VNĐ</p>
-        </div>
-        <div class="glass rounded-2xl p-5">
-          <p class="text-xs text-white/70"><i class="fa-solid fa-chart-pie fa-fw"></i> Lãi gộp/tháng</p>
-          <p class="mt-2 text-2xl font-bold mono" id="kpiGrossProfit">0</p>
-          <p class="mt-1 text-xs text-white/60">triệu VNĐ</p>
-        </div>
-        <div class="glass rounded-2xl p-5">
-          <p class="text-xs text-white/70"><i class="fa-solid fa-money-bill-transfer fa-fw"></i> Lãi trước thuế</p>
-          <p class="mt-2 text-2xl font-bold mono" id="kpiPreTax">0</p>
-          <p class="mt-1 text-xs text-white/60">triệu VNĐ</p>
-        </div>
-        <div class="glass rounded-2xl p-5">
-          <p class="text-xs text-white/70"><i class="fa-solid fa-scale-balanced fa-fw"></i> Điểm hoà vốn</p>
-          <p class="mt-2 text-2xl font-bold mono" id="kpiBreakeven">0</p>
-          <p class="mt-1 text-xs text-white/60">triệu doanh thu/tháng</p>
-        </div>
-      </div>
-
-      <!-- Chart + Table -->
-      <div class="mt-6 grid lg:grid-cols-5 gap-4">
-        <div class="glass rounded-2xl p-5 lg:col-span-3">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-chart-line fa-fw"></i> Dòng tiền mô
-              phỏng 12 tháng</p>
-            <span class="chip rounded-full px-3 py-1 text-xs"><i class="fa-solid fa-wand-magic-sparkles fa-fw"></i> tự
-              cập nhật</span>
-          </div>
-          <div class="mt-4">
-            <canvas id="cashChart" height="120"></canvas>
-          </div>
-          <p class="mt-3 text-xs text-white/60">
-            <i class="fa-solid fa-circle-info fa-fw"></i>
-            Mô hình đơn giản: doanh thu dự án + retainer, lãi gộp theo %, trừ chi phí cố định.
-          </p>
-        </div>
-
-        <div class="glass rounded-2xl p-5 lg:col-span-2">
-          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-table fa-fw"></i> Tóm tắt 1 tháng</p>
-          <div class="mt-3 overflow-auto">
-            <table class="w-full text-sm">
-              <tbody>
-                <tr>
-                  <td class="py-2 text-white/70"><i class="fa-solid fa-briefcase fa-fw"></i> Doanh thu dự án</td>
-                  <td class="py-2 text-right mono" id="tProjectRevenue">0</td>
-                </tr>
-                <tr>
-                  <td class="py-2 text-white/70"><i class="fa-solid fa-handshake fa-fw"></i> Doanh thu retainer</td>
-                  <td class="py-2 text-right mono" id="tRetainerRevenue">0</td>
-                </tr>
-                <tr>
-                  <td class="py-2 text-white/70"><i class="fa-solid fa-sack-dollar fa-fw"></i> Tổng doanh thu</td>
-                  <td class="py-2 text-right mono" id="tTotalRevenue">0</td>
-                </tr>
-                <tr>
-                  <td class="py-2 text-white/70"><i class="fa-solid fa-chart-pie fa-fw"></i> Lãi gộp</td>
-                  <td class="py-2 text-right mono" id="tGrossProfit">0</td>
-                </tr>
-                <tr>
-                  <td class="py-2 text-white/70"><i class="fa-solid fa-receipt fa-fw"></i> Chi phí cố định</td>
-                  <td class="py-2 text-right mono" id="tFixedCost">0</td>
-                </tr>
-                <tr>
-                  <td class="py-2 text-white/70"><i class="fa-solid fa-money-bill-transfer fa-fw"></i> Lãi trước thuế
-                  </td>
-                  <td class="py-2 text-right mono" id="tPreTax">0</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- OPS -->
-    <section id="ops" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
-      <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
-        <i class="fa-solid fa-gears fa-fw"></i> Operations (vận hành) – Từ nhận khách đến thu tiền
-      </h2>
-
-      <div class="mt-6 grid lg:grid-cols-3 gap-4">
-        <div class="glass rounded-2xl p-5">
-          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-inbox fa-fw"></i> Nhận khách</p>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-filter fa-fw"></i> Sàng lọc: quy mô, pain, ngân sách</li>
-            <li class="flex gap-2"><i class="fa-solid fa-calendar-check fa-fw"></i> Đặt lịch audit 60–90 phút</li>
-            <li class="flex gap-2"><i class="fa-solid fa-file-signature fa-fw"></i> NDA trước khi nhận dữ liệu thật</li>
-          </ul>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-truck-fast fa-fw"></i> Triển khai</p>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-flag-checkered fa-fw"></i> Sprint 1 tuần: demo liên tục</li>
-            <li class="flex gap-2"><i class="fa-solid fa-clipboard-check fa-fw"></i> UAT + checklist go-live</li>
-            <li class="flex gap-2"><i class="fa-solid fa-graduation-cap fa-fw"></i> Training + SOP + video hướng dẫn
-            </li>
-          </ul>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-cash-register fa-fw"></i> Thu tiền &
-            CSKH</p>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-layer-group fa-fw"></i> Thu theo mốc: 40–40–20 (hoặc 50–30–20)
-            </li>
-            <li class="flex gap-2"><i class="fa-solid fa-headset fa-fw"></i> Ticket hỗ trợ + SLA</li>
-            <li class="flex gap-2"><i class="fa-solid fa-chart-simple fa-fw"></i> Monthly review KPI → upsell retainer
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="mt-6 glass rounded-2xl p-5">
-        <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-toolbox fa-fw"></i> Công cụ quản lý (gọn
-          mà hiệu quả)</p>
-        <div class="mt-3 grid md:grid-cols-4 gap-3 text-sm text-white/75">
-          <div class="chip rounded-2xl p-4"><i class="fa-solid fa-list-check fa-fw"></i> Project: ClickUp/Trello</div>
-          <div class="chip rounded-2xl p-4"><i class="fa-solid fa-folder-open fa-fw"></i> Tài liệu: Google/M365</div>
-          <div class="chip rounded-2xl p-4"><i class="fa-solid fa-ticket fa-fw"></i> Support: Freshdesk/Form</div>
-          <div class="chip rounded-2xl p-4"><i class="fa-solid fa-address-card fa-fw"></i> CRM: HubSpot</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RISK -->
-    <section id="risk" class="mt-6 glass soft rounded-2xl p-6 md:p-8">
-      <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
-        <i class="fa-solid fa-lock fa-fw"></i> Rủi ro & Bảo mật
-      </h2>
-
-      <div class="mt-6 grid lg:grid-cols-2 gap-4">
-        <div class="glass rounded-2xl p-5">
-          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-shield-halved fa-fw"></i> Bảo mật dữ
-            liệu khách hàng</p>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-user-lock fa-fw"></i> Nguyên tắc “đúng người đúng quyền” (least
-              privilege)</li>
-            <li class="flex gap-2"><i class="fa-solid fa-key fa-fw"></i> Bật 2FA + không dùng chung tài khoản</li>
-            <li class="flex gap-2"><i class="fa-solid fa-clock-rotate-left fa-fw"></i> Backup định kỳ + kiểm tra khả
-              năng khôi phục</li>
-            <li class="flex gap-2"><i class="fa-solid fa-clipboard-list fa-fw"></i> Log truy cập: ai làm gì, lúc nào
-            </li>
-          </ul>
-        </div>
-
-        <div class="glass rounded-2xl p-5">
-          <p class="font-semibold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation fa-fw"></i> Phương
-            án dự phòng (khi có sự cố)</p>
-          <ul class="mt-3 space-y-2 text-sm text-white/75">
-            <li class="flex gap-2"><i class="fa-solid fa-rotate-left fa-fw"></i> Rollback plan khi go-live lỗi (quay về
-              quy trình cũ tạm thời)</li>
-            <li class="flex gap-2"><i class="fa-solid fa-bug-slash fa-fw"></i> Quy trình xử lý bug theo mức độ ưu tiên
-              (P1/P2/P3)</li>
-            <li class="flex gap-2"><i class="fa-solid fa-file-signature fa-fw"></i> Hợp đồng scope rõ + nghiệm thu theo
-              mốc (tránh “làm vô hạn”)</li>
-            <li class="flex gap-2"><i class="fa-solid fa-handshake-angle fa-fw"></i> Retainer giúp hệ thống được chăm
-              sóc liên tục</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="mt-6 chip rounded-2xl p-5 text-sm text-white/75">
-        <p class="font-semibold"><i class="fa-solid fa-comment-dots fa-fw"></i> Câu nói chốt niềm tin </p>
-        <p class="mt-2">
-          “Chúng tôi không bán phần mềm rồi biến mất. Chúng tôi bán <b>kết quả vận hành</b>:
-          quy trình chạy thật, đo KPI thật, và có người chịu trách nhiệm đến khi ổn định.”
+        <ul>
+          <li><b><i class="fa-solid fa-crosshairs"></i> Chọn đúng “phần đau”</b> làm trước: duyệt chi/mua/kho/bán/CSKH.</li>
+          <li><b><i class="fa-solid fa-play"></i> Làm xong chạy thật</b> + hướng dẫn vận hành ngay.</li>
+          <li><b><i class="fa-solid fa-ruler-combined"></i> Đo trước/sau</b> bằng 3 chỉ số dễ hiểu: thời gian – trễ hạn – sai số.</li>
+          <li><b><i class="fa-solid fa-layer-group"></i> Mở rộng theo module</b> để không “đập đi làm lại”.</li>
+        </ul>
+        <div class="divider"></div>
+        <p class="muted small">
+          Ưu tiên năm 1: <b>khách thật</b> + <b>dòng tiền thật</b> + <b>case thật</b>. Không chạy theo “đẹp slide”.
         </p>
       </div>
     </section>
-  </main>
 
-  <script>
-    // ---------- Helpers ----------
-    const fmt = (n) => {
-      const x = Math.round(n);
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
+    <!-- AI SECTION -->
+    <section class="card" id="ai" style="margin-top:14px;">
+      <div class="iconTitle">
+        <i class="fa-solid fa-brain"></i>
+        <h3>AI ngày nay giúp doanh nghiệp phân tích & cải tiến được gì?</h3>
+      </div>
+      <p class="muted">
+        AI hữu ích nhất khi giúp doanh nghiệp <b>nhìn ra điểm rò rỉ</b> và <b>đề xuất cách làm tốt hơn</b> từ dữ liệu sẵn có (Excel, đơn hàng, kho, công nợ, phản hồi khách hàng…).
+        Đây là các hạng mục AI có thể tạo giá trị ngay:
+      </p>
 
-    // ---------- Elements ----------
-    const el = {
-      ppm: document.getElementById("projectsPerMonth"),
-      ppmLabel: document.getElementById("ppmLabel"),
-      price: document.getElementById("avgProjectPrice"),
-      gm: document.getElementById("grossMargin"),
-      gmLabel: document.getElementById("gmLabel"),
-      retPrice: document.getElementById("retainerPrice"),
-      retClients: document.getElementById("retainerClients"),
-      rcLabel: document.getElementById("rcLabel"),
-      fixed: document.getElementById("fixedCost"),
+      <div class="tiles">
+        <div class="tile">
+          <b><i class="fa-solid fa-magnifying-glass-chart"></i> Phân tích điểm “rò rỉ chi phí”</b>
+          <div class="small">Chỉ ra công đoạn nào kẹt nhất, trễ nhất, sai nhất, nhóm nào quá tải, lỗi nào lặp lại.</div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-sitemap"></i> Đề xuất cải tiến quy trình</b>
+          <div class="small">Gợi ý sắp xếp lại bước làm/duyệt, giảm vòng lặp, chuẩn hoá checklist tránh thiếu sót.</div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-bell"></i> Cảnh báo sớm & nhắc việc thông minh</b>
+          <div class="small">Dự đoán nguy cơ trễ hạn, cảnh báo trước để quản lý can thiệp kịp thời.</div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-warehouse"></i> Gợi ý tồn kho & mua hàng</b>
+          <div class="small">Gợi ý mức tồn hợp lý, phát hiện hàng chậm quay vòng → giảm tồn kho ứ đọng.</div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-users-gear"></i> Nâng hiệu suất nhân sự</b>
+          <div class="small">Đo tải công việc, phát hiện nút thắt, gợi ý phân bổ việc để giảm lỗi do quá tải.</div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-headset"></i> Tóm tắt & phân loại phản hồi khách</b>
+          <div class="small">Tổng hợp phản hồi, phân loại nguyên nhân, ưu tiên xử lý → giảm mất khách.</div>
+        </div>
+      </div>
 
-      kpiRevenue: document.getElementById("kpiRevenue"),
-      kpiGross: document.getElementById("kpiGrossProfit"),
-      kpiPreTax: document.getElementById("kpiPreTax"),
-      kpiBreakeven: document.getElementById("kpiBreakeven"),
+      <div class="callout">
+        <b><i class="fa-solid fa-bolt"></i> Vì sao triển khai 1 module sẽ nhanh hơn nhờ AI?</b>
+        <ul>
+          <li><i class="fa-solid fa-wand-magic-sparkles"></i> Chuẩn bị mẫu quy trình & mẫu biểu nhanh → giảm công “làm từ đầu”.</li>
+          <li><i class="fa-solid fa-list-check"></i> Checklist nghiệm thu rõ → giảm làm đi làm lại.</li>
+          <li><i class="fa-solid fa-file-import"></i> Hỗ trợ chuyển dữ liệu từ file cũ → giảm nhập tay, giảm sai số.</li>
+          <li><i class="fa-solid fa-gauge-high"></i> Gợi ý báo cáo theo mục tiêu quản lý → dựng nhanh, chỉnh nhanh.</li>
+        </ul>
+        <p class="muted small">Tóm lại: AI giúp “đỡ tốn công” → module ra nhanh hơn → chi phí thấp hơn.</p>
+      </div>
+    </section>
 
-      tProject: document.getElementById("tProjectRevenue"),
-      tRet: document.getElementById("tRetainerRevenue"),
-      tTotal: document.getElementById("tTotalRevenue"),
-      tGross: document.getElementById("tGrossProfit"),
-      tFixed: document.getElementById("tFixedCost"),
-      tPreTax: document.getElementById("tPreTax"),
-    };
+    <!-- ROLES -->
+    <section class="card" id="roles" style="margin-top:14px;">
+      <div class="iconTitle">
+        <i class="fa-solid fa-people-group"></i>
+        <h3>Phân vai  </h3>
+      </div>
 
-    // ---------- Chart ----------
-    const ctx = document.getElementById("cashChart").getContext("2d");
+      <div class="tiles">
+        <div class="tile">
+          <b><i class="fa-solid fa-user-check"></i> Founder (Hoàng Anh) — chịu trách nhiệm 100% kỹ thuật & triển khai</b>
+          <div class="small">
+            Tự triển khai module đầu tiên để ra kết quả nhanh, đảm bảo “chạy được ngoài thực tế”.
+            Sau khi mô hình ổn định, chịu trách nhiệm quản lý toàn bộ (khách hàng, triển khai, vận hành, đội ngũ).
+          </div>
+        </div>
 
-    const labels = Array.from({ length: 12 }, (_, i) => `T${i + 1}`);
-    const chartData = {
-      labels,
-      datasets: [
-        { label: "Doanh thu (triệu)", data: Array(12).fill(0) },
-        { label: "Lãi trước thuế (triệu)", data: Array(12).fill(0) },
-      ]
-    };
+        <div class="tile">
+          <b><i class="fa-solid fa-handshake-angle"></i> Angel (Vũ) — quan hệ, khách hàng & quản lý tài chính</b>
+          <div class="small">
+            Mở cửa network doanh nghiệp/đối tác/angel, hỗ trợ chốt khi cần để tăng độ tin,
+            thiết lập kỷ luật tài chính (thu/chi, burn-rate, báo cáo gọn hàng tháng).
+          </div>
+        </div>
+      </div>
 
-    const cashChart = new Chart(ctx, {
-      type: "line",
-      data: chartData,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { labels: { color: "rgba(255,255,255,.75)" } },
-          tooltip: {
-            callbacks: {
-              label: (c) => `${c.dataset.label}: ${fmt(c.parsed.y)}`
-            }
-          }
-        },
-        scales: {
-          x: { ticks: { color: "rgba(255,255,255,.65)" }, grid: { color: "rgba(255,255,255,.08)" } },
-          y: { ticks: { color: "rgba(255,255,255,.65)" }, grid: { color: "rgba(255,255,255,.08)" } }
-        }
-      }
-    });
+      <div class="divider"></div>
+      <div class="pillRow">
+        <span class="pill ok"><i class="fa-solid fa-check"></i> Founder tập trung tạo kết quả</span>
+        <span class="pill warn"><i class="fa-solid fa-shield"></i> Angel tăng tốc bán hàng + kiểm soát tài chính</span>
+      </div>
+    </section>
 
-    // ---------- Model ----------
-    function recalc() {
-      const projectsPerMonth = Number(el.ppm.value);
-      const avgProjectPrice = Number(el.price.value); // triệu
-      const grossMargin = Number(el.gm.value) / 100;
-      const retainerPrice = Number(el.retPrice.value); // triệu
-      const retainerClients = Number(el.retClients.value);
-      const fixedCost = Number(el.fixed.value); // triệu
+    <!-- PLAN -->
+    <section class="card" id="plan" style="margin-top:14px;">
+      <div class="iconTitle">
+        <i class="fa-solid fa-calendar-check"></i>
+        <h3>Kế hoạch 12 tháng </h3>
+      </div>
 
-      el.ppmLabel.textContent = projectsPerMonth;
-      el.gmLabel.textContent = Math.round(grossMargin * 100);
-      el.rcLabel.textContent = retainerClients;
+      <div class="tiles">
+        <div class="tile">
+          <b><i class="fa-solid fa-1"></i> Tháng 1–3: Có khách & quick-win</b>
+          <div class="small">
+            Chốt 1 khách đầu tiên, triển khai module ưu tiên, tạo case trước/sau,
+            hoàn thiện bộ giới thiệu “giảm chi phí”.
+          </div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-2"></i> Tháng 4–6: Chuẩn hoá để làm nhanh</b>
+          <div class="small">
+            Chuẩn hoá cách triển khai, checklist, gói duy trì, tăng kênh giới thiệu, tối ưu thời gian ra module mới.
+          </div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-3"></i> Tháng 7–12: Mở rộng doanh thu/khách</b>
+          <div class="small">
+            Bán thêm module cho khách cũ, tăng tỷ lệ duy trì, chuẩn bị data/metrics để gọi vốn vòng sau nếu cần.
+          </div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-bullseye"></i> KPI năm 1: “thật và đo được”</b>
+          <div class="small">
+            Có khách thật, có hợp đồng duy trì, có số liệu trước/sau, có quy trình chuẩn để scale.
+          </div>
+        </div>
+      </div>
+    </section>
 
-      // 1-month snapshot
-      const projectRevenue = projectsPerMonth * avgProjectPrice;
-      const retainerRevenue = retainerClients * retainerPrice;
-      const totalRevenue = projectRevenue + retainerRevenue;
-      const grossProfit = totalRevenue * grossMargin;
-      const preTax = grossProfit - fixedCost;
+    <!-- NUMBERS -->
+    <section class="card" id="numbers" style="margin-top:14px;">
+      <div class="iconTitle">
+        <i class="fa-solid fa-chart-line"></i>
+        <h3>Bảng kỳ vọng 12 tháng</h3>
+      </div>
 
-      // Breakeven revenue = fixed / margin
-      const breakeven = grossMargin > 0 ? (fixedCost / grossMargin) : 0;
+      <p class="muted">
+        Bảng này giúp Angel nhìn được: nếu thị trường chậm, mô hình vẫn tạo dòng tiền tối thiểu và tạo case để mở rộng.
+        Số liệu có thể điều chỉnh theo hợp đồng thực tế.
+      </p>
 
-      // Update KPI
-      el.kpiRevenue.textContent = fmt(totalRevenue);
-      el.kpiGross.textContent = fmt(grossProfit);
-      el.kpiPreTax.textContent = fmt(preTax);
-      el.kpiBreakeven.textContent = fmt(breakeven);
+      <div class="divider"></div>
 
-      // Update table
-      el.tProject.textContent = fmt(projectRevenue);
-      el.tRet.textContent = fmt(retainerRevenue);
-      el.tTotal.textContent = fmt(totalRevenue);
-      el.tGross.textContent = fmt(grossProfit);
-      el.tFixed.textContent = fmt(fixedCost);
-      el.tPreTax.textContent = fmt(preTax);
+      <p class="muted small">
+        <b><i class="fa-solid fa-sliders"></i> Giả định:</b><br/>
+        • Phí triển khai (1 lần): <code class="inline">90.000.000đ</code> chia mốc: 40% (T1), 40% (T2), 20% (T3).<br/>
+        • Phí duy trì: <code class="inline">12.000.000đ/tháng</code> từ T4 → T12 (9 tháng).<br/>
+        • Chi phí tối thiểu: <code class="inline">8.000.000đ/tháng</code> (công cụ/cloud/đi lại/marketing tối thiểu).<br/>
+        • Founder tự triển khai (chưa tính lương Founder để bảng không “ảo”, có thể bổ sung sau theo yêu cầu Angel).
+      </p>
 
-      // 12-month simulation (simple):
-      // - Keep projectsPerMonth constant
-      // - Retainer grows slowly: assume +1 client/month until reaching chosen retainerClients
-      //   This mimics: dự án go-live → convert sang retainer.
-      const rev = [];
-      const profit = [];
-      let curRet = Math.max(0, Math.min(retainerClients, Math.floor(retainerClients / 2))); // start at half
-      const growth = retainerClients > curRet ? Math.ceil((retainerClients - curRet) / 6) : 0; // ramp in ~6 months
+      <table aria-label="Kỳ vọng 12 tháng - 1 khách">
+        <thead>
+          <tr>
+            <th>Tháng</th>
+            <th>Doanh thu (triệu)</th>
+            <th>Chi phí (triệu)</th>
+            <th>Lợi nhuận (triệu)</th>
+            <th>Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>T1</td><td>36</td><td>8</td><td>28</td><td class="muted"><i class="fa-solid fa-file-signature"></i> Ký + kickoff (40%)</td></tr>
+          <tr><td>T2</td><td>36</td><td>8</td><td>28</td><td class="muted"><i class="fa-solid fa-clipboard-check"></i> Bàn giao/kiểm tra (40%)</td></tr>
+          <tr><td>T3</td><td>18</td><td>8</td><td>10</td><td class="muted"><i class="fa-solid fa-rocket"></i> Vận hành thật (20%)</td></tr>
+          <tr><td>T4</td><td>12</td><td>8</td><td>4</td><td class="muted"><i class="fa-solid fa-arrows-rotate"></i> Duy trì</td></tr>
+          <tr><td>T5</td><td>12</td><td>8</td><td>4</td><td class="muted">Duy trì</td></tr>
+          <tr><td>T6</td><td>12</td><td>8</td><td>4</td><td class="muted">Duy trì</td></tr>
+          <tr><td>T7</td><td>12</td><td>8</td><td>4</td><td class="muted">Duy trì</td></tr>
+          <tr><td>T8</td><td>12</td><td>8</td><td>4</td><td class="muted">Duy trì</td></tr>
+          <tr><td>T9</td><td>12</td><td>8</td><td>4</td><td class="muted">Duy trì</td></tr>
+          <tr><td>T10</td><td>12</td><td>8</td><td>4</td><td class="muted">Duy trì</td></tr>
+          <tr><td>T11</td><td>12</td><td>8</td><td>4</td><td class="muted">Duy trì</td></tr>
+          <tr><td>T12</td><td>12</td><td>8</td><td>4</td><td class="muted">Duy trì</td></tr>
+          <tr class="sumrow">
+            <td><b>Tổng năm</b></td>
+            <td><b>174</b></td>
+            <td><b>96</b></td>
+            <td><b>78</b></td>
+            <td class="muted"><b><i class="fa-solid fa-user"></i> 1 khách/năm</b> (thận trọng)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      for (let i = 0; i < 12; i++) {
-        if (i > 0 && curRet < retainerClients) curRet = Math.min(retainerClients, curRet + Math.max(1, growth));
-        const r = (projectsPerMonth * avgProjectPrice) + (curRet * retainerPrice);
-        const gp = r * grossMargin;
-        const pt = gp - fixedCost;
-        rev.push(r);
-        profit.push(pt);
-      }
+    <!-- RACI TABLE -->
+    <section class="card" id="raci" style="margin-top:14px;">
+      <div class="iconTitle">
+        <i class="fa-solid fa-table"></i>
+        <h3>Bảng phân công trách nhiệm (RACI) — rõ vai, dễ vận hành</h3>
+      </div>
 
-      cashChart.data.datasets[0].data = rev;
-      cashChart.data.datasets[1].data = profit;
-      cashChart.update();
-    }
+      <p class="muted small">
+        <span class="raciBadge R">R</span> Làm chính & thực thi
+        <span class="raciBadge A">A</span> Chịu trách nhiệm cuối
+        <span class="raciBadge C">C</span> Tham vấn
+        <span class="raciBadge I">I</span> Được cập nhật
+      </p>
 
-    // Bind events
-    ["input", "change"].forEach(ev => {
-      el.ppm.addEventListener(ev, recalc);
-      el.gm.addEventListener(ev, recalc);
-      el.retClients.addEventListener(ev, recalc);
-      el.price.addEventListener(ev, recalc);
-      el.retPrice.addEventListener(ev, recalc);
-      el.fixed.addEventListener(ev, recalc);
-    });
+      <table aria-label="Bảng RACI">
+        <thead>
+          <tr>
+            <th>Việc</th>
+            <th>Founder (Hoàng Anh)</th>
+            <th>Angel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><i class="fa-solid fa-chess-king"></i> Chiến lược</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge C">C</span></td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-cube"></i> Xây sản phẩm (MVP/roadmap/delivery)</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge C">C</span></td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-hand-holding-dollar"></i> Bán hàng & chốt hợp đồng</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge C">C</span><span class="raciBadge R">R</span></td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-bullhorn"></i> Marketing (content/event/lead)</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge C">C</span></td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-user-plus"></i> Tuyển dụng (key roles)</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge C">C</span><span class="raciBadge R">R</span></td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-wallet"></i> Tài chính (budget/burn/báo cáo)</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge C">C</span></td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-scale-balanced"></i> Pháp lý (hợp đồng/bảo mật)</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge C">C</span></td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-gears"></i> Vận hành & quy trình nội bộ</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge I">I</span><span class="raciBadge C">C</span></td>
+          </tr>
+          <tr>
+            <td><i class="fa-solid fa-diagram-project"></i> Quan hệ đối tác (partners)</td>
+            <td><span class="raciBadge A">A</span><span class="raciBadge R">R</span></td>
+            <td><span class="raciBadge C">C</span><span class="raciBadge R">R</span></td>
+          </tr>
 
-    recalc();
-  </script>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ASK -->
+    <section class="card" id="ask" style="margin-top:14px;">
+      <div class="iconTitle">
+        <i class="fa-solid fa-handshake"></i>
+        <h3>Đề nghị hợp tác (ngắn gọn, đi thẳng)</h3>
+      </div>
+
+      <div class="callout">
+        <b><i class="fa-solid fa-key"></i> Hoàng Anh Technology cần Angel giúp 2 việc, và chỉ 2 việc:</b>
+        <ul>
+          <li><b><i class="fa-solid fa-network-wired"></i> Mối quan hệ & khách hàng:</b> giới thiệu 3–10 chủ doanh nghiệp phù hợp, ưu tiên người ra quyết định.</li>
+          <li><b><i class="fa-solid fa-money-check-dollar"></i> Quản lý tài chính:</b> thiết lập kỷ luật thu/chi, burn-rate, báo cáo gọn theo tháng.</li>
+        </ul>
+        <p class="muted small">
+          Angel không cần làm kỹ thuật. Hoàng Anh Technologychịu trách nhiệm 100% triển khai và chất lượng.
+        </p>
+      </div>
+
+      <div class="tiles">
+        <div class="tile">
+          <b><i class="fa-solid fa-comment-dots"></i> Mẫu câu giới thiệu</b>
+          <div class="small">
+            “Bên này giúp doanh nghiệp giảm chi phí vận hành bằng số hoá quy trình. Làm từng phần, chạy thật, đo hiệu quả.
+            Mình hẹn 15 phút để họ nghe vấn đề và đề xuất phần làm trước.”
+          </div>
+        </div>
+        <div class="tile">
+          <b><i class="fa-solid fa-circle-check"></i> Hoàng Anh Technology cam kết với Angel</b>
+          <div class="small">
+            Hoàng Anh Technology tự triển khai module đầu tiên để tạo quick-win, minh bạch tiến độ, có số liệu trước/sau,
+            và khi mô hình ổn định Hoàng Anh Technology sẽ quản lý toàn bộ.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
 </body>
-
 </html>
